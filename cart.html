@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Giỏ hàng - Cường Mobile
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================
+     HEADER
+===================================== -->
+
+<header class="header">
+
+    <div class="header-container">
+
+        <a
+            href="index.html"
+            class="logo">
+
+            <img src="images/logo.png" alt="">
+
+        </a>
+
+
+        <nav class="main-nav">
+
+            <a href="index.html">
+                Trang chủ
+            </a>
+
+            <a href="index.html#products">
+                Sản phẩm
+            </a>
+
+            <a
+                href="cart.html"
+                class="cart-link">
+
+                🛒 Giỏ hàng
+
+                <span id="cart-count">
+                    0
+                </span>
+
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+
+<!-- =====================================
+     CART
+===================================== -->
+
+<main class="cart-page">
+
+    <div class="cart-container">
+
+
+        <div class="cart-header">
+
+            <h1>
+                🛒 Giỏ hàng
+            </h1>
+
+            <a
+                href="index.html#products"
+                class="continue-shopping">
+
+                ← Tiếp tục mua hàng
+
+            </a>
+
+        </div>
+
+
+
+        <!-- DANH SÁCH GIỎ -->
+
+        <div
+            id="cart-list"
+            class="cart-list">
+
+        </div>
+
+
+
+        <!-- GIỎ TRỐNG -->
+
+        <div
+            id="empty-cart"
+            class="empty-cart"
+            style="display:none;">
+
+            <div class="empty-cart-icon">
+                🛒
+            </div>
+
+            <h2>
+                Giỏ hàng đang trống
+            </h2>
+
+            <p>
+                Hãy chọn sản phẩm bạn muốn mua.
+            </p>
+
+            
+
+        </div>
+
+
+
+        <!-- TỔNG -->
+
+        <div
+            id="cart-summary"
+            class="cart-summary"
+            style="display:none;">
+
+
+            <div class="summary-row">
+
+                <span>
+                    Tạm tính
+                </span>
+
+                <strong
+                    id="cart-subtotal">
+
+                    0 ₫
+
+                </strong>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Phí vận chuyển
+                </span>
+
+                <strong>
+                    Miễn phí
+                </strong>
+
+            </div>
+
+
+            <div class="summary-total">
+
+                <span>
+                    Tổng cộng
+                </span>
+
+                <strong
+                    id="cart-total">
+
+                    0 ₫
+
+                </strong>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="checkout-btn"
+                class="btn checkout-btn">
+
+                Tiến hành thanh toán →
+
+            </button>
+
+
+            <button
+                type="button"
+                id="clear-cart-btn"
+                class="clear-cart-btn">
+
+                🗑 Xóa toàn bộ giỏ hàng
+
+            </button>
+
+        </div>
+
+
+    </div>
+
+</main>
+
+
+
+<!-- =====================================
+     FOOTER
+===================================== -->
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div>
+
+            <h2>
+                CƯỜNG MOBILE
+            </h2>
+
+            <p>
+                Điện thoại & phụ kiện
+                chất lượng.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 Cường Mobile.
+        </p>
+
+    </div>
+
+</footer>
+
+
+
+<script src="js/cart.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Đặt hàng thành công - Cường Mobile
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="header-container">
+
+        <a
+            href="index.html"
+            class="logo">
+
+            <img src="images/logo.png" alt="">
+
+        </a>
+
+
+        <nav class="main-nav">
+
+            <!--a href="index.html">
+                Trang chủ
+            </a>-->
+
+            <a href="index.html#products">
+                Sản phẩm
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+
+<main class="success-page">
+
+    <div class="success-box">
+
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+
+        <h1>
+            Đặt hàng thành công!
+        </h1>
+
+
+        <p>
+            Cảm ơn bạn đã mua hàng tại
+            <strong>Cường Mobile</strong>.
+        </p>
+
+
+        <div class="success-order">
+
+            <span>
+                Mã đơn hàng
+            </span>
+
+            <strong
+                id="order-id">
+
+                Đang tải...
+
+            </strong>
+
+        </div>
+
+
+        <p class="success-note">
+
+            Chúng tôi sẽ liên hệ với bạn
+            để xác nhận đơn hàng.
+
+        </p>
+
+
+        <div class="success-actions">
+
+            <a
+                href="index.html"
+                class="btn">
+
+                ← Về trang chủ
+
+            </a>
+
+
+            <a
+                href="index.html#products"
+                class="btn secondary-btn">
+
+                Tiếp tục mua hàng
+
+            </a>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <h2>
+            CƯỜNG MOBILE
+        </h2>
+
+        <p>
+            Điện thoại & phụ kiện
+        </p>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 Cường Mobile
+        </p>
+
+    </div>
+
+</footer>
+
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const orderId =
+            params.get(
+                "orderId"
+            );
+
+
+        const element =
+            document.getElementById(
+                "order-id"
+            );
+
+
+        if (orderId) {
+
+            element.textContent =
+                orderId;
+
+        } else {
+
+            element.textContent =
+                "Không xác định";
+
+        }
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

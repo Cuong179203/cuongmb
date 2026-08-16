@@ -1,0 +1,860 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Xem chi tiết sản phẩm tại Cường Mobile - Điện thoại, phụ kiện và thiết bị công nghệ chính hãng."
+    >
+
+    <meta
+        name="theme-color"
+        content="#e60012"
+    >
+
+    <meta
+        name="robots"
+        content="index, follow"
+    >
+
+    <meta
+        name="author"
+        content="Cường Mobile"
+    >
+
+    <title>Chi tiết sản phẩm - Cường Mobile</title>
+
+
+    <!-- =====================================================
+         FAVICON
+    ====================================================== -->
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="assets/favicon.png"
+    >
+
+
+    <!-- =====================================================
+         PRECONNECT / PERFORMANCE
+    ====================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+
+    <!-- =====================================================
+         MAIN CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+
+    <!-- =====================================================
+         BASIC PRODUCT PAGE STYLE
+         
+         Chỉ bổ sung giao diện phụ.
+         Không thay thế logic CSS hiện tại.
+    ====================================================== -->
+
+    <style>
+
+        /* =================================================
+           PAGE FOUNDATION
+        ================================================= */
+
+        .product-detail-page {
+            min-height: 520px;
+            padding: 30px 16px 60px;
+        }
+
+
+        .product-detail-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+
+        /* =================================================
+           BREADCRUMB
+        ================================================= */
+
+        .product-breadcrumb {
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .product-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 14px 16px;
+        }
+
+        .product-breadcrumb .product-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .product-breadcrumb a {
+            color: #64748b;
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+
+        .product-breadcrumb a:hover {
+            color: #e60012;
+        }
+
+        .product-breadcrumb strong {
+            color: #0f172a;
+        }
+
+
+        /* =================================================
+           LOADING
+        ================================================= */
+
+        .product-loading {
+            min-height: 400px;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            padding: 50px 20px;
+        }
+
+        .product-loading-spinner {
+            width: 48px;
+            height: 48px;
+
+            border: 4px solid #e5e7eb;
+            border-top-color: #e60012;
+
+            border-radius: 50%;
+
+            animation: productLoadingSpin .8s linear infinite;
+
+            margin-bottom: 20px;
+        }
+
+        .product-loading h2 {
+            margin: 0 0 8px;
+            color: #0f172a;
+            font-size: 22px;
+        }
+
+        .product-loading p {
+            margin: 0;
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        @keyframes productLoadingSpin {
+
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+
+        }
+
+
+        /* =================================================
+           TRUST FEATURES
+        ================================================= */
+
+        .product-trust {
+            background: #f8fafc;
+            border-top: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .trust-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 20px;
+        }
+
+        .trust-item {
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 14px;
+
+            padding: 20px;
+
+            background: #ffffff;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 14px;
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease;
+        }
+
+        .trust-item:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 10px 25px rgba(15, 23, 42, .08);
+        }
+
+        .trust-icon {
+            width: 44px;
+            height: 44px;
+
+            flex: 0 0 44px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background: #fff1f2;
+
+            border-radius: 12px;
+
+            font-size: 22px;
+        }
+
+        .trust-item h3 {
+            margin: 0 0 5px;
+
+            font-size: 15px;
+
+            color: #0f172a;
+        }
+
+        .trust-item p {
+            margin: 0;
+
+            color: #64748b;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =================================================
+           FOOTER
+        ================================================= */
+
+        .footer {
+            margin-top: 0;
+        }
+
+
+        /* =================================================
+           CART COUNT
+        ================================================= */
+
+        .cart-nav-link {
+            position: relative;
+        }
+
+        .cart-count {
+            min-width: 20px;
+            height: 20px;
+
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            margin-left: 5px;
+
+            padding: 0 5px;
+
+            background: #e60012;
+
+            color: #ffffff;
+
+            border-radius: 999px;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            vertical-align: middle;
+        }
+
+
+        /* =================================================
+           MOBILE
+        ================================================= */
+
+        @media (max-width: 900px) {
+
+            .trust-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .product-detail-page {
+                padding: 20px 12px 40px;
+            }
+
+            .product-container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .product-breadcrumb .product-container {
+                font-size: 13px;
+            }
+
+            .trust-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .trust-item {
+                padding: 16px;
+            }
+
+            .product-loading {
+                min-height: 320px;
+            }
+
+            .product-loading h2 {
+                font-size: 19px;
+            }
+
+        }
+
+
+        /* =================================================
+           ACCESSIBILITY
+        ================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                scroll-behavior: auto !important;
+
+                animation-duration: 0.01ms !important;
+
+                animation-iteration-count: 1 !important;
+
+                transition-duration: 0.01ms !important;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<!-- =====================================================
+     BREADCRUMB
+====================================================== -->
+
+<section
+    class="product-breadcrumb"
+    aria-label="Điều hướng vị trí"
+>
+
+    <div class="product-container">
+
+        <a
+            href="index.html"
+            aria-label="Quay về trang chủ"
+        >
+            Trang chủ
+        </a>
+
+        <span aria-hidden="true">
+            /
+        </span>
+
+        <a
+            href="index.html#products"
+            aria-label="Xem danh sách sản phẩm"
+        >
+            Sản phẩm
+        </a>
+
+        <span aria-hidden="true">
+            /
+        </span>
+
+        <strong aria-current="page">
+            Chi tiết sản phẩm
+        </strong>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     PRODUCT DETAIL
+====================================================== -->
+
+<main class="product-detail-page">
+
+    <div
+        id="product-detail"
+        class="product-detail-container"
+    >
+
+
+        <!-- =================================================
+             LOADING
+        ================================================== -->
+
+        <div
+            class="product-loading"
+            role="status"
+            aria-live="polite"
+            aria-label="Đang tải thông tin sản phẩm"
+        >
+
+            <div
+                class="product-loading-spinner"
+                aria-hidden="true"
+            ></div>
+
+            <h2>
+                Đang tải sản phẩm...
+            </h2>
+
+            <p>
+                Vui lòng chờ trong giây lát.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</main>
+
+
+
+<!-- =====================================================
+     TRUST FEATURES
+====================================================== -->
+
+<section
+    class="product-trust"
+    aria-label="Cam kết của Cường Mobile"
+>
+
+    <div class="product-container">
+
+        <div class="trust-grid">
+
+
+            <!-- =================================================
+                 ITEM 1
+            ================================================== -->
+
+            <div class="trust-item">
+
+                <div
+                    class="trust-icon"
+                    aria-hidden="true"
+                >
+                    🛡️
+                </div>
+
+                <div>
+
+                    <h3>
+                        Sản phẩm chất lượng
+                    </h3>
+
+                    <p>
+                        Cam kết sản phẩm đúng mô tả
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ITEM 2
+            ================================================== -->
+
+            <div class="trust-item">
+
+                <div
+                    class="trust-icon"
+                    aria-hidden="true"
+                >
+                    🚚
+                </div>
+
+                <div>
+
+                    <h3>
+                        Giao hàng nhanh
+                    </h3>
+
+                    <p>
+                        Đóng gói cẩn thận, giao hàng tận nơi
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ITEM 3
+            ================================================== -->
+
+            <div class="trust-item">
+
+                <div
+                    class="trust-icon"
+                    aria-hidden="true"
+                >
+                    💬
+                </div>
+
+                <div>
+
+                    <h3>
+                        Hỗ trợ tận tâm
+                    </h3>
+
+                    <p>
+                        Luôn sẵn sàng hỗ trợ khách hàng
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ITEM 4
+            ================================================== -->
+
+            <div class="trust-item">
+
+                <div
+                    class="trust-icon"
+                    aria-hidden="true"
+                >
+                    🔒
+                </div>
+
+                <div>
+
+                    <h3>
+                        Thanh toán an toàn
+                    </h3>
+
+                    <p>
+                        Thông tin đơn hàng được bảo mật
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+
+        <!-- =================================================
+             BRAND
+        ================================================== -->
+
+        <div class="footer-brand">
+
+            <a
+                href="index.html"
+                class="footer-logo"
+                aria-label="Cường Mobile - Trang chủ"
+            >
+
+                <!---<img
+                    src="images/logo.png"
+                    alt="Cường Mobile"
+                    loading="lazy"
+                >--->
+
+                <div>
+
+                    <h2>
+                        CƯỜNG MOBILE
+                    </h2>
+
+                    <p>
+                        Điện thoại & phụ kiện
+                    </p>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- =================================================
+             LINKS
+        ================================================== -->
+
+        <div class="footer-links">
+
+            <h3>
+                Liên kết
+            </h3>
+
+            <a href="index.html">
+                Trang chủ
+            </a>
+
+            <a href="index.html#products">
+                Sản phẩm
+            </a>
+
+            <a href="cart.html">
+                Giỏ hàng
+            </a>
+
+        </div>
+
+
+
+        <!-- =================================================
+             SUPPORT
+        ================================================== -->
+
+        <div class="footer-support">
+
+            <h3>
+                Hỗ trợ
+            </h3>
+
+            <p>
+                Cường Mobile luôn sẵn sàng hỗ trợ bạn.
+            </p>
+
+            <p>
+                📱 Tư vấn sản phẩm
+            </p>
+
+            <p>
+                🚚 Hỗ trợ giao hàng
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =================================================
+         FOOTER BOTTOM
+    ================================================== -->
+
+    <div class="footer-bottom">
+
+        <p>
+
+            © 2026
+
+            <strong>
+                Cường Mobile
+            </strong>
+
+            . All rights reserved.
+
+        </p>
+
+    </div>
+
+</footer>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+
+====================================================== -->
+
+<script src="js/products.js"></script>
+
+<script src="js/product.js"></script>
+
+
+
+<!-- =====================================================
+     CART COUNT
+
+     Không can thiệp vào logic product.js.
+
+     Chỉ đọc localStorage và cập nhật
+     số lượng sản phẩm trong giỏ hàng.
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        updateProductPageCartCount();
+
+    }
+);
+
+
+
+function updateProductPageCartCount() {
+
+    let cart = [];
+
+
+    /* =====================================================
+       READ CART
+    ====================================================== */
+
+    try {
+
+        cart =
+            JSON.parse(
+                localStorage.getItem("cart")
+            ) || [];
+
+    }
+
+    catch (error) {
+
+        cart = [];
+
+    }
+
+
+    /* =====================================================
+       VALIDATE CART
+    ====================================================== */
+
+    if (!Array.isArray(cart)) {
+
+        cart = [];
+
+    }
+
+
+    /* =====================================================
+       CALCULATE TOTAL QUANTITY
+    ====================================================== */
+
+    const count =
+        cart.reduce(
+            function (
+                total,
+                item
+            ) {
+
+                return (
+                    total +
+                    Number(
+                        item.quantity || 0
+                    )
+                );
+
+            },
+            0
+        );
+
+
+    /* =====================================================
+       UPDATE CART BADGE
+    ====================================================== */
+
+    const element =
+        document.getElementById(
+            "cart-count"
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            count;
+
+    }
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
+

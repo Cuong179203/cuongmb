@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Thanh toán - Cường Mobile
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="header-container">
+
+        <a
+            href="index.html"
+            class="logo">
+
+            <img src="images/logo.png" alt="">
+
+        </a>
+
+
+        <nav class="main-nav">
+
+            <a href="index.html">
+                Trang chủ
+            </a>
+
+            <a href="cart.html">
+                🛒 Giỏ hàng
+                <span id="cart-count">0</span>
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+
+<main class="checkout-page">
+
+    <div class="checkout-container">
+
+
+        <h1>
+            Thanh toán
+        </h1>
+
+
+        <div class="checkout-grid">
+
+
+            <!-- =========================
+                 THÔNG TIN KHÁCH HÀNG
+            ========================== -->
+
+            <section class="checkout-form">
+
+                <h2>
+                    Thông tin nhận hàng
+                </h2>
+
+
+                <form id="checkout-form">
+
+
+                    <div class="form-group">
+
+                        <label for="customer-name">
+                            Họ và tên *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="customer-name"
+                            name="name"
+                            placeholder="Nguyễn Văn A"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="customer-phone">
+                            Số điện thoại *
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="customer-phone"
+                            name="phone"
+                            placeholder="09xxxxxxxx"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="customer-address">
+                            Địa chỉ nhận hàng *
+                        </label>
+
+                        <textarea
+                            id="customer-address"
+                            name="address"
+                            rows="3"
+                            placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"
+                            required></textarea>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="customer-note">
+                            Ghi chú
+                        </label>
+
+                        <textarea
+                            id="customer-note"
+                            name="note"
+                            rows="3"
+                            placeholder="Ghi chú cho đơn hàng..."></textarea>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Phương thức thanh toán
+                        </label>
+
+
+                        <div class="payment-options">
+
+                            <label class="payment-option">
+
+                                <input
+                                    type="radio"
+                                    name="payment"
+                                    value="COD"
+                                    checked>
+
+                                <span>
+                                    💵 Thanh toán khi nhận hàng (COD)
+                                </span>
+
+                            </label>
+
+
+                            <label class="payment-option">
+
+                                <input
+                                    type="radio"
+                                    name="payment"
+                                    value="BANK">
+
+                                <span>
+                                    🏦 Chuyển khoản ngân hàng
+                                </span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="checkout-message"
+                        class="checkout-message">
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        id="submit-order"
+                        class="btn submit-order-btn">
+
+                        Đặt hàng
+
+                    </button>
+
+
+                </form>
+
+            </section>
+
+
+
+            <!-- =========================
+                 ĐƠN HÀNG
+            ========================== -->
+
+            <section class="checkout-summary">
+
+                <h2>
+                    Đơn hàng của bạn
+                </h2>
+
+
+                <div
+                    id="checkout-items"
+                    class="checkout-items">
+
+                </div>
+
+
+                <div class="checkout-total">
+
+                    <span>
+                        Tổng cộng
+                    </span>
+
+                    <strong
+                        id="checkout-total">
+
+                        0 ₫
+
+                    </strong>
+
+                </div>
+
+
+                <a
+                    href="cart.html"
+                    class="back-cart">
+
+                    ← Quay lại giỏ hàng
+
+                </a>
+
+            </section>
+
+
+        </div>
+
+    </div>
+
+</main>
+
+
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <h2>
+            CƯỜNG MOBILE
+        </h2>
+
+        <p>
+            Điện thoại & phụ kiện
+        </p>
+
+    </div>
+
+</footer>
+
+
+
+<script src="js/checkout.js"></script>
+
+</body>
+
+</html>
