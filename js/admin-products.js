@@ -2,7 +2,9 @@
 
 (function () {
 
-
+    // ========================================================
+    // CONFIG
+    // ========================================================
 
     const API_URL =
         "https://script.google.com/macros/s/AKfycbxxQRkcRL5BrTEdH28baGNOIyYa-I2vKiYkbQ_ChiMICpqRLSayBpaCM_N44Kn8jtV3/exec";
@@ -11,9 +13,9 @@
         "CM_ADMIN_TOKEN";
 
 
-    // ============================================================
+    // ========================================================
     // STATE
-    // ============================================================
+    // ========================================================
 
     let products = [];
 
@@ -24,9 +26,9 @@
     let isDeleting = false;
 
 
-    // ============================================================
+    // ========================================================
     // LOG
-    // ============================================================
+    // ========================================================
 
     function log() {
 
@@ -48,9 +50,9 @@
     }
 
 
-    // ============================================================
-    // GET ADMIN TOKEN
-    // ============================================================
+    // ========================================================
+    // TOKEN
+    // ========================================================
 
     function getAdminToken() {
 
@@ -78,10 +80,6 @@
     }
 
 
-    // ============================================================
-    // CLEAR TOKEN
-    // ============================================================
-
     function clearAdminToken() {
 
         try {
@@ -104,16 +102,13 @@
     }
 
 
-    // ============================================================
-    // REDIRECT LOGIN
-    // ============================================================
-
     function redirectToAdminLogin() {
 
         clearAdminToken();
 
         alert(
-            "Phiên đăng nhập admin đã hết hạn.\n\nVui lòng đăng nhập lại."
+            "Phiên đăng nhập admin đã hết hạn.\n\n" +
+            "Vui lòng đăng nhập lại."
         );
 
         window.location.href =
@@ -121,10 +116,6 @@
 
     }
 
-
-    // ============================================================
-    // REQUIRE TOKEN
-    // ============================================================
 
     function requireAdminToken() {
 
@@ -144,9 +135,9 @@
     }
 
 
-    // ============================================================
-    // PARSE API RESPONSE
-    // ============================================================
+    // ========================================================
+    // API RESPONSE
+    // ========================================================
 
     async function parseApiResponse(
         response,
@@ -185,7 +176,7 @@
         );
 
 
-        if (!text || !text.trim()) {
+        if (!text.trim()) {
 
             throw new Error(
                 "API trả về dữ liệu rỗng."
@@ -194,15 +185,11 @@
         }
 
 
-        let data;
-
-
         try {
 
-            data =
-                JSON.parse(
-                    text
-                );
+            return JSON.parse(
+                text
+            );
 
         }
 
@@ -213,12 +200,10 @@
                 error
             );
 
-
             console.error(
-                "RAW API RESPONSE:",
+                "RAW RESPONSE:",
                 text
             );
-
 
             throw new Error(
                 "API không trả về JSON hợp lệ."
@@ -226,15 +211,12 @@
 
         }
 
-
-        return data;
-
     }
 
 
-    // ============================================================
-    // CHECK ADMIN ERROR
-    // ============================================================
+    // ========================================================
+    // ADMIN ERROR
+    // ========================================================
 
     function isAdminPermissionError(
         data
@@ -250,7 +232,7 @@
         }
 
 
-        const errorText =
+        const text =
             String(
                 data.error ||
                 data.message ||
@@ -262,43 +244,43 @@
 
         return (
 
-            errorText.includes(
+            text.includes(
                 "quyền truy cập admin"
             )
 
             ||
 
-            errorText.includes(
+            text.includes(
                 "không có quyền"
             )
 
             ||
 
-            errorText.includes(
+            text.includes(
                 "admin token"
             )
 
             ||
 
-            errorText.includes(
+            text.includes(
                 "token không hợp lệ"
             )
 
             ||
 
-            errorText.includes(
+            text.includes(
                 "token khong hop le"
             )
 
             ||
 
-            errorText.includes(
+            text.includes(
                 "unauthorized"
             )
 
             ||
 
-            errorText.includes(
+            text.includes(
                 "forbidden"
             )
 
@@ -307,9 +289,9 @@
     }
 
 
-    // ============================================================
-    // POST ADMIN API
-    // ============================================================
+    // ========================================================
+    // POST ADMIN
+    // ========================================================
 
     async function apiPostAdmin(
         action,
@@ -318,7 +300,6 @@
 
         const token =
             requireAdminToken();
-
 
         if (!token) {
 
@@ -344,7 +325,8 @@
 
         log(
             "API POST:",
-            action
+            action,
+            payload
         );
 
 
@@ -399,9 +381,9 @@
     }
 
 
-    // ============================================================
-    // DOM READY
-    // ============================================================
+    // ========================================================
+    // INIT
+    // ========================================================
 
     function init() {
 
@@ -410,16 +392,11 @@
         );
 
 
-        const token =
-            getAdminToken();
-
-
-        if (!token) {
+        if (!getAdminToken()) {
 
             console.warn(
                 "Không tìm thấy CM_ADMIN_TOKEN."
             );
-
 
             window.location.href =
                 "admin.html";
@@ -428,10 +405,6 @@
 
         }
 
-
-        // ========================================================
-        // SEARCH
-        // ========================================================
 
         const search =
             document.getElementById(
@@ -449,10 +422,6 @@
         }
 
 
-        // ========================================================
-        // CATEGORY
-        // ========================================================
-
         const category =
             document.getElementById(
                 "categoryFilter"
@@ -468,10 +437,6 @@
 
         }
 
-
-        // ========================================================
-        // FORM
-        // ========================================================
 
         const form =
             document.getElementById(
@@ -489,25 +454,16 @@
         }
 
 
-        // ========================================================
-        // IMAGE PREVIEW
-        // ========================================================
-
         setupImagePreview();
-
-
-        // ========================================================
-        // LOAD PRODUCTS
-        // ========================================================
 
         loadProducts();
 
     }
 
 
-    // ============================================================
+    // ========================================================
     // LOAD PRODUCTS
-    // ============================================================
+    // ========================================================
 
     async function loadProducts() {
 
@@ -517,6 +473,12 @@
 
 
         try {
+
+            /*
+            GAS hiện tại có getProducts public.
+            Không gửi adminToken ở GET vì doGet()
+            của GAS không yêu cầu admin cho getProducts.
+            */
 
             const response =
                 await fetch(
@@ -543,19 +505,6 @@
 
 
             if (
-                isAdminPermissionError(
-                    data
-                )
-            ) {
-
-                redirectToAdminLogin();
-
-                return;
-
-            }
-
-
-            if (
                 !data ||
                 data.success !== true
             ) {
@@ -576,24 +525,14 @@
             }
 
 
-            if (
+            products =
                 Array.isArray(
                     data.products
                 )
-            ) {
-
-                products =
-                    data.products.map(
+                    ? data.products.map(
                         normalizeProduct
-                    );
-
-            }
-
-            else {
-
-                products = [];
-
-            }
+                    )
+                    : [];
 
 
             log(
@@ -634,9 +573,10 @@
     }
 
 
-    // ============================================================
+    // ========================================================
     // NORMALIZE PRODUCT
-    // ============================================================
+    // GAS → FRONTEND
+    // ========================================================
 
     function normalizeProduct(
         product
@@ -646,36 +586,22 @@
             product || {};
 
 
-        const price =
-            toNumber(
-                firstDefined(
-                    product["Giá"],
-                    product.price,
-                    0
-                )
-            );
-
-
-        const originalPrice =
-            toNumber(
-                firstDefined(
-                    product["Giá gốc"],
-                    product.originalPrice,
-                    product.original_price,
-                    0
-                )
-            );
-
-
-        const stock =
-            toNumber(
-                firstDefined(
-                    product["Tồn kho"],
-                    product.stock,
-                    0
-                )
-            );
-
+        /*
+        GAS getProducts() trả về:
+        ID
+        Tên sản phẩm
+        Giá
+        Giá gốc
+        Danh mục
+        Tồn kho
+        Hình ảnh
+        Hình ảnh phụ
+        Khuyến mãi
+        Ưu đãi
+        Thông số kỹ thuật
+        Mô tả
+        Hiển thị
+        */
 
         return {
 
@@ -700,11 +626,24 @@
 
 
             price:
-                price,
+                toNumber(
+                    firstDefined(
+                        product["Giá"],
+                        product.price,
+                        0
+                    )
+                ),
 
 
             originalPrice:
-                originalPrice,
+                toNumber(
+                    firstDefined(
+                        product["Giá gốc"],
+                        product.originalPrice,
+                        product.original_price,
+                        0
+                    )
+                ),
 
 
             category:
@@ -718,7 +657,13 @@
 
 
             stock:
-                stock,
+                toNumber(
+                    firstDefined(
+                        product["Tồn kho"],
+                        product.stock,
+                        0
+                    )
+                ),
 
 
             image:
@@ -735,21 +680,25 @@
                 normalizeImages(
                     firstDefined(
                         product["Hình ảnh phụ"],
-                        product["Ảnh phụ"],
+                        product.gallery,
                         product.images,
-                        product.subImages,
-                        product.sub_images,
+                        product.additionalImages,
                         ""
                     )
                 ),
 
 
-            specifications:
+            /*
+            GAS phân biệt "Khuyến mãi" và "Ưu đãi".
+            Frontend giữ cả hai.
+            */
+
+            discount:
                 normalizeText(
                     firstDefined(
-                        product["Thông số kỹ thuật"],
-                        product.specifications,
-                        product.specs,
+                        product["Khuyến mãi"],
+                        product.discount,
+                        product.promotion,
                         ""
                     )
                 ),
@@ -759,8 +708,20 @@
                 normalizeText(
                     firstDefined(
                         product["Ưu đãi"],
+                        product.offer,
+                        product.offers,
                         product.promotion,
-                        product.promotions,
+                        ""
+                    )
+                ),
+
+
+            specifications:
+                normalizeText(
+                    firstDefined(
+                        product["Thông số kỹ thuật"],
+                        product.specs,
+                        product.specifications,
                         ""
                     )
                 ),
@@ -788,9 +749,9 @@
     }
 
 
-    // ============================================================
+    // ========================================================
     // FIRST DEFINED
-    // ============================================================
+    // ========================================================
 
     function firstDefined() {
 
@@ -823,9 +784,9 @@
     }
 
 
-    // ============================================================
+    // ========================================================
     // NUMBER
-    // ============================================================
+    // ========================================================
 
     function toNumber(
         value
@@ -859,7 +820,6 @@
         }
 
 
-        // Xóa ký hiệu tiền
         text =
             text
                 .replace(
@@ -873,7 +833,6 @@
                 .trim();
 
 
-        // Trường hợp dạng 12.000.000
         if (
             /^\d{1,3}(\.\d{3})+$/.test(
                 text
@@ -888,7 +847,6 @@
 
         }
 
-        // Trường hợp dạng 12,000,000
         else if (
             /^\d{1,3}(,\d{3})+$/.test(
                 text
@@ -919,29 +877,24 @@
     }
 
 
-    // ============================================================
-    // NORMALIZE IMAGES
-    // ============================================================
+    // ========================================================
+    // IMAGES
+    // ========================================================
 
     function normalizeImages(
         value
     ) {
 
         if (
-            Array.isArray(
-                value
-            )
+            Array.isArray(value)
         ) {
 
             return value
                 .map(
-                    function (item) {
-
-                        return String(
+                    item =>
+                        String(
                             item ?? ""
-                        ).trim();
-
-                    }
+                        ).trim()
                 )
                 .filter(Boolean);
 
@@ -961,10 +914,6 @@
         }
 
 
-        // ========================================================
-        // JSON ARRAY
-        // ========================================================
-
         try {
 
             const parsed =
@@ -974,20 +923,15 @@
 
 
             if (
-                Array.isArray(
-                    parsed
-                )
+                Array.isArray(parsed)
             ) {
 
                 return parsed
                     .map(
-                        function (item) {
-
-                            return String(
+                        item =>
+                            String(
                                 item ?? ""
-                            ).trim();
-
-                        }
+                            ).trim()
                     )
                     .filter(Boolean);
 
@@ -997,85 +941,40 @@
 
         catch (error) {
 
-            // Tiếp tục xử lý text
+            // Continue
 
         }
 
 
-        // ========================================================
-        // NEW LINE
-        // ========================================================
-
-        if (
-            text.includes(
-                "\n"
+        return text
+            .split(/\r?\n|,/)
+            .map(
+                item =>
+                    item.trim()
             )
-        ) {
-
-            return text
-                .split(/\r?\n/)
-                .map(
-                    function (item) {
-
-                        return item.trim();
-
-                    }
-                )
-                .filter(Boolean);
-
-        }
-
-
-        // ========================================================
-        // COMMA
-        // ========================================================
-
-        if (
-            text.includes(",")
-        ) {
-
-            return text
-                .split(",")
-                .map(
-                    function (item) {
-
-                        return item.trim();
-
-                    }
-                )
-                .filter(Boolean);
-
-        }
-
-
-        return [text];
+            .filter(Boolean);
 
     }
 
 
-    // ============================================================
-    // NORMALIZE TEXT
-    // ============================================================
+    // ========================================================
+    // TEXT
+    // ========================================================
 
     function normalizeText(
         value
     ) {
 
         if (
-            Array.isArray(
-                value
-            )
+            Array.isArray(value)
         ) {
 
             return value
                 .map(
-                    function (item) {
-
-                        return String(
+                    item =>
+                        String(
                             item ?? ""
-                        ).trim();
-
-                    }
+                        ).trim()
                 )
                 .filter(Boolean)
                 .join("\n");
@@ -1090,9 +989,9 @@
     }
 
 
-    // ============================================================
-    // CATEGORY FILTER
-    // ============================================================
+    // ========================================================
+    // CATEGORY
+    // ========================================================
 
     function createCategoryFilter() {
 
@@ -1118,7 +1017,7 @@
 
 
         products.forEach(
-            function (product) {
+            product => {
 
                 const category =
                     String(
@@ -1145,14 +1044,11 @@
 
 
         categories.sort(
-            function (a, b) {
-
-                return a.localeCompare(
+            (a, b) =>
+                a.localeCompare(
                     b,
                     "vi"
-                );
-
-            }
+                )
         );
 
 
@@ -1160,27 +1056,27 @@
             "";
 
 
-        const allOption =
+        const all =
             document.createElement(
                 "option"
             );
 
 
-        allOption.value =
+        all.value =
             "";
 
 
-        allOption.textContent =
+        all.textContent =
             "Tất cả danh mục";
 
 
         select.appendChild(
-            allOption
+            all
         );
 
 
         categories.forEach(
-            function (category) {
+            category => {
 
                 const option =
                     document.createElement(
@@ -1225,9 +1121,9 @@
     }
 
 
-    // ============================================================
-    // RENDER PRODUCTS
-    // ============================================================
+    // ========================================================
+    // RENDER
+    // ========================================================
 
     function renderProducts() {
 
@@ -1291,7 +1187,7 @@
 
         const filtered =
             products.filter(
-                function (product) {
+                product => {
 
                     const id =
                         String(
@@ -1316,30 +1212,21 @@
                         );
 
 
-                    const matchSearch =
-
-                        !search ||
-
-                        id.includes(
-                            search
-                        ) ||
-
-                        name.includes(
-                            search
-                        );
-
-
-                    const matchCategory =
-
-                        !category ||
-
-                        productCategory ===
-                        category;
-
-
                     return (
-                        matchSearch &&
-                        matchCategory
+
+                        (
+                            !search ||
+                            id.includes(search) ||
+                            name.includes(search)
+                        )
+
+                        &&
+
+                        (
+                            !category ||
+                            productCategory === category
+                        )
+
                     );
 
                 }
@@ -1398,7 +1285,7 @@
 
 
         filtered.forEach(
-            function (product) {
+            product => {
 
                 const row =
                     document.createElement(
@@ -1406,9 +1293,7 @@
                     );
 
 
-                // =================================================
                 // IMAGE
-                // =================================================
 
                 const imageCell =
                     document.createElement(
@@ -1420,9 +1305,7 @@
                     "product-image-cell";
 
 
-                if (
-                    product.image
-                ) {
+                if (product.image) {
 
                     const img =
                         document.createElement(
@@ -1449,36 +1332,27 @@
                             this.onerror =
                                 null;
 
-
                             this.style.display =
                                 "none";
 
 
-                            if (
-                                !imageCell.querySelector(
-                                    ".image-fallback"
-                                )
-                            ) {
-
-                                const fallback =
-                                    document.createElement(
-                                        "span"
-                                    );
-
-
-                                fallback.className =
-                                    "image-fallback";
-
-
-                                fallback.textContent =
-                                    "Không ảnh";
-
-
-                                imageCell.appendChild(
-                                    fallback
+                            const fallback =
+                                document.createElement(
+                                    "span"
                                 );
 
-                            }
+
+                            fallback.className =
+                                "image-fallback";
+
+
+                            fallback.textContent =
+                                "Không ảnh";
+
+
+                            imageCell.appendChild(
+                                fallback
+                            );
 
                         };
 
@@ -1502,9 +1376,7 @@
                 );
 
 
-                // =================================================
                 // ID
-                // =================================================
 
                 const idCell =
                     document.createElement(
@@ -1533,9 +1405,7 @@
                 );
 
 
-                // =================================================
                 // NAME
-                // =================================================
 
                 const nameCell =
                     document.createElement(
@@ -1557,9 +1427,7 @@
                 );
 
 
-                // =================================================
                 // CATEGORY
-                // =================================================
 
                 const categoryCell =
                     document.createElement(
@@ -1577,9 +1445,7 @@
                 );
 
 
-                // =================================================
                 // PRICE
-                // =================================================
 
                 const priceCell =
                     document.createElement(
@@ -1602,9 +1468,7 @@
                 );
 
 
-                // =================================================
                 // ORIGINAL PRICE
-                // =================================================
 
                 const originalPriceCell =
                     document.createElement(
@@ -1613,8 +1477,7 @@
 
 
                 if (
-                    product.originalPrice >
-                    0
+                    product.originalPrice > 0
                 ) {
 
                     originalPriceCell.className =
@@ -1641,9 +1504,7 @@
                 );
 
 
-                // =================================================
                 // PROMOTION
-                // =================================================
 
                 const promotionCell =
                     document.createElement(
@@ -1651,14 +1512,25 @@
                     );
 
 
-                const promotions =
+                const promotionLines =
                     getLines(
                         product.promotion
                     );
 
 
+                const discountLines =
+                    getLines(
+                        product.discount
+                    );
+
+
+                const totalPromotionLines =
+                    promotionLines.length +
+                    discountLines.length;
+
+
                 if (
-                    promotions.length > 0
+                    totalPromotionLines > 0
                 ) {
 
                     const badge =
@@ -1672,7 +1544,7 @@
 
 
                     badge.textContent =
-                        promotions.length +
+                        totalPromotionLines +
                         " ưu đãi";
 
 
@@ -1695,9 +1567,7 @@
                 );
 
 
-                // =================================================
                 // STOCK
-                // =================================================
 
                 const stockCell =
                     document.createElement(
@@ -1738,9 +1608,7 @@
                 );
 
 
-                // =================================================
                 // VISIBLE
-                // =================================================
 
                 const visibleCell =
                     document.createElement(
@@ -1748,7 +1616,7 @@
                     );
 
 
-                const visibleBadge =
+                const badge =
                     document.createElement(
                         "span"
                     );
@@ -1760,29 +1628,29 @@
                     )
                 ) {
 
-                    visibleBadge.className =
+                    badge.className =
                         "status-visible";
 
 
-                    visibleBadge.textContent =
+                    badge.textContent =
                         "Đang hiển thị";
 
                 }
 
                 else {
 
-                    visibleBadge.className =
+                    badge.className =
                         "status-hidden";
 
 
-                    visibleBadge.textContent =
+                    badge.textContent =
                         "Đang ẩn";
 
                 }
 
 
                 visibleCell.appendChild(
-                    visibleBadge
+                    badge
                 );
 
 
@@ -1791,9 +1659,7 @@
                 );
 
 
-                // =================================================
                 // ACTION
-                // =================================================
 
                 const actionCell =
                     document.createElement(
@@ -1804,8 +1670,6 @@
                 actionCell.className =
                     "product-actions";
 
-
-                // EDIT
 
                 const editButton =
                     document.createElement(
@@ -1827,17 +1691,12 @@
 
                 editButton.addEventListener(
                     "click",
-                    function () {
-
+                    () =>
                         editProduct(
                             product.id
-                        );
-
-                    }
+                        )
                 );
 
-
-                // DELETE
 
                 const deleteButton =
                     document.createElement(
@@ -1859,13 +1718,10 @@
 
                 deleteButton.addEventListener(
                     "click",
-                    function () {
-
+                    () =>
                         removeProduct(
                             product.id
-                        );
-
-                    }
+                        )
                 );
 
 
@@ -1894,24 +1750,13 @@
     }
 
 
-    // ============================================================
-    // ADD PRODUCT
-    // ============================================================
+    // ========================================================
+    // ADD
+    // ========================================================
 
     function openAddProduct() {
 
-        log(
-            "OPEN ADD PRODUCT"
-        );
-
-
-        const token =
-            getAdminToken();
-
-
-        if (!token) {
-
-            redirectToAdminLogin();
+        if (!requireAdminToken()) {
 
             return;
 
@@ -1983,7 +1828,6 @@
             id.disabled =
                 false;
 
-
             id.value =
                 "";
 
@@ -2000,7 +1844,6 @@
 
         clearImagePreviews();
 
-
         modal.classList.add(
             "active"
         );
@@ -2008,21 +1851,15 @@
     }
 
 
-    // ============================================================
-    // EDIT PRODUCT
-    // ============================================================
+    // ========================================================
+    // EDIT
+    // ========================================================
 
     function editProduct(
         id
     ) {
 
-        const token =
-            getAdminToken();
-
-
-        if (!token) {
-
-            redirectToAdminLogin();
+        if (!requireAdminToken()) {
 
             return;
 
@@ -2031,14 +1868,13 @@
 
         const product =
             products.find(
-                function (item) {
-
-                    return String(
+                item =>
+                    normalizeId(
                         item.id
                     ) ===
-                        String(id);
-
-                }
+                    normalizeId(
+                        id
+                    )
             );
 
 
@@ -2057,15 +1893,15 @@
             product.id;
 
 
-        const modalTitle =
+        const title =
             document.getElementById(
                 "modalTitle"
             );
 
 
-        if (modalTitle) {
+        if (title) {
 
-            modalTitle.textContent =
+            title.textContent =
                 "Sửa sản phẩm";
 
         }
@@ -2167,114 +2003,14 @@
 
         updateSubImagesPreview();
 
-
         openProductModal();
 
     }
 
 
-    // ============================================================
-    // SET VALUE
-    // ============================================================
-
-    function setValue(
-        id,
-        value
-    ) {
-
-        const element =
-            document.getElementById(
-                id
-            );
-
-
-        if (element) {
-
-            element.value =
-                value ?? "";
-
-        }
-
-    }
-
-
-    // ============================================================
-    // OPEN MODAL
-    // ============================================================
-
-    function openProductModal() {
-
-        const modal =
-            document.getElementById(
-                "productModal"
-            );
-
-
-        if (!modal) {
-
-            alert(
-                "Không tìm thấy #productModal."
-            );
-
-            return;
-
-        }
-
-
-        modal.classList.add(
-            "active"
-        );
-
-    }
-
-
-    // ============================================================
-    // CLOSE MODAL
-    // ============================================================
-
-    function closeProductModal() {
-
-        const modal =
-            document.getElementById(
-                "productModal"
-            );
-
-
-        if (modal) {
-
-            modal.classList.remove(
-                "active"
-            );
-
-        }
-
-
-        editingProductId =
-            null;
-
-
-        const id =
-            document.getElementById(
-                "productId"
-            );
-
-
-        if (id) {
-
-            id.disabled =
-                false;
-
-        }
-
-
-        clearImagePreviews();
-
-    }
-
-
-    // ============================================================
-    // SAVE PRODUCT
-    // ============================================================
+    // ========================================================
+    // SAVE
+    // ========================================================
 
     async function saveProduct(
         event
@@ -2295,316 +2031,30 @@
 
 
         const token =
-            getAdminToken();
+            requireAdminToken();
 
 
         if (!token) {
 
-            redirectToAdminLogin();
-
             return;
 
         }
 
 
-        // ========================================================
-        // ELEMENTS
-        // ========================================================
-
-        const productIdElement =
-            document.getElementById(
-                "productId"
-            );
-
-
-        const productNameElement =
-            document.getElementById(
-                "productName"
-            );
-
-
-        const productPriceElement =
-            document.getElementById(
-                "productPrice"
-            );
-
-
-        const productOriginalPriceElement =
-            document.getElementById(
-                "productOriginalPrice"
-            );
-
-
-        const productCategoryElement =
-            document.getElementById(
-                "productCategory"
-            );
-
-
-        const productStockElement =
-            document.getElementById(
-                "productStock"
-            );
-
-
-        const productImageElement =
-            document.getElementById(
-                "productImage"
-            );
-
-
-        const productImagesElement =
-            document.getElementById(
-                "productImages"
-            );
-
-
-        const productSpecificationsElement =
-            document.getElementById(
-                "productSpecifications"
-            );
-
-
-        const productPromotionElement =
-            document.getElementById(
-                "productPromotion"
-            );
-
-
-        const productDescriptionElement =
-            document.getElementById(
-                "productDescription"
-            );
-
-
-        const productVisibleElement =
-            document.getElementById(
-                "productVisible"
-            );
-
-
-        // ========================================================
-        // PRODUCT DATA
-        // ========================================================
-
-        const product = {
-
-            id:
-                productIdElement
-                    ? String(
-                        productIdElement.value ||
-                        ""
-                    ).trim()
-                    : "",
-
-
-            name:
-                productNameElement
-                    ? String(
-                        productNameElement.value ||
-                        ""
-                    ).trim()
-                    : "",
-
-
-            price:
-                productPriceElement
-                    ? toNumber(
-                        productPriceElement.value
-                    )
-                    : 0,
-
-
-            originalPrice:
-                productOriginalPriceElement
-                    ? toNumber(
-                        productOriginalPriceElement.value
-                    )
-                    : 0,
-
-
-            category:
-                productCategoryElement
-                    ? String(
-                        productCategoryElement.value ||
-                        ""
-                    ).trim()
-                    : "",
-
-
-            stock:
-                productStockElement
-                    ? toNumber(
-                        productStockElement.value
-                    )
-                    : 0,
-
-
-            image:
-                productImageElement
-                    ? String(
-                        productImageElement.value ||
-                        ""
-                    ).trim()
-                    : "",
-
-
-            images:
-                productImagesElement
-                    ? getLines(
-                        productImagesElement.value
-                    )
-                    : [],
-
-
-            specifications:
-                productSpecificationsElement
-                    ? String(
-                        productSpecificationsElement.value ||
-                        ""
-                    ).trim()
-                    : "",
-
-
-            promotion:
-                productPromotionElement
-                    ? String(
-                        productPromotionElement.value ||
-                        ""
-                    ).trim()
-                    : "",
-
-
-            description:
-                productDescriptionElement
-                    ? String(
-                        productDescriptionElement.value ||
-                        ""
-                    ).trim()
-                    : "",
-
-
-            visible:
-                productVisibleElement
-                    ? (
-                        productVisibleElement.value ===
-                        "true"
-                    )
-                    : true
-
-        };
-
-
-        // ========================================================
-        // VALIDATE
-        // ========================================================
-
-        if (!product.id) {
-
-            alert(
-                "Vui lòng nhập ID sản phẩm."
-            );
-
-            return;
-
-        }
-
-
-        if (!product.name) {
-
-            alert(
-                "Vui lòng nhập tên sản phẩm."
-            );
-
-            return;
-
-        }
-
-
-        if (!product.category) {
-
-            alert(
-                "Vui lòng nhập danh mục."
-            );
-
-            return;
-
-        }
+        const product =
+            readProductFromForm();
 
 
         if (
-            !Number.isFinite(
-                product.price
-            ) ||
-            product.price < 0
+            !validateProduct(
+                product
+            )
         ) {
-
-            alert(
-                "Giá bán không hợp lệ."
-            );
 
             return;
 
         }
 
-
-        if (
-            !Number.isFinite(
-                product.originalPrice
-            ) ||
-            product.originalPrice < 0
-        ) {
-
-            alert(
-                "Giá gốc không hợp lệ."
-            );
-
-            return;
-
-        }
-
-
-        if (
-            product.originalPrice > 0 &&
-            product.price >
-            product.originalPrice
-        ) {
-
-            const confirmed =
-                confirm(
-                    "Giá bán đang cao hơn giá gốc.\n\n" +
-                    "Bạn vẫn muốn lưu sản phẩm?"
-                );
-
-
-            if (!confirmed) {
-
-                return;
-
-            }
-
-        }
-
-
-        if (
-            !Number.isFinite(
-                product.stock
-            ) ||
-            product.stock < 0
-        ) {
-
-            alert(
-                "Tồn kho không hợp lệ."
-            );
-
-            return;
-
-        }
-
-
-        // ========================================================
-        // CHECK DUPLICATE ID WHEN ADDING
-        // ========================================================
 
         if (
             !editingProductId
@@ -2612,28 +2062,20 @@
 
             const duplicate =
                 products.some(
-                    function (item) {
-
-                        return (
-                            String(
-                                item.id
-                            ).trim()
-                            .toLowerCase()
-                            ===
+                    item =>
+                        normalizeId(
+                            item.id
+                        ) ===
+                        normalizeId(
                             product.id
-                                .trim()
-                                .toLowerCase()
-                        );
-
-                    }
+                        )
                 );
 
 
             if (duplicate) {
 
                 alert(
-                    "ID sản phẩm đã tồn tại.\n\n" +
-                    "Vui lòng nhập ID khác."
+                    "ID sản phẩm đã tồn tại."
                 );
 
                 return;
@@ -2643,30 +2085,22 @@
         }
 
 
-        // ========================================================
-        // ACTION
-        // ========================================================
-
         const action =
             editingProductId
                 ? "updateProduct"
                 : "addProduct";
 
 
-        // ========================================================
-        // SAVE
-        // ========================================================
-
         isSaving =
             true;
 
 
-        const submitButton =
+        const button =
             getSubmitButton();
 
 
         setButtonLoading(
-            submitButton,
+            button,
             true,
             editingProductId
                 ? "Đang cập nhật..."
@@ -2676,10 +2110,126 @@
 
         try {
 
+            /*
+            CONTRACT CHUẨN VỚI GAS
+
+            Frontend:
+                id
+                name
+                price
+                originalPrice
+                category
+                stock
+                image
+                images
+                promotion
+                description
+                visible
+
+            GAS buildProductRow():
+                Hình ảnh phụ ← images
+                Ưu đãi       ← promotion / offer
+                Khuyến mãi   ← discount / promotion
+
+            Để tránh mất dữ liệu, gửi thêm:
+                gallery
+                offer
+                offers
+                specs
+                discount
+
+            */
+
+            const payload = {
+
+                id:
+                    product.id,
+
+                name:
+                    product.name,
+
+                price:
+                    product.price,
+
+                originalPrice:
+                    product.originalPrice,
+
+                category:
+                    product.category,
+
+                stock:
+                    product.stock,
+
+                image:
+                    product.image,
+
+                images:
+                    product.images.join(
+                        "\n"
+                    ),
+
+                gallery:
+                    product.images.join(
+                        "\n"
+                    ),
+
+                additionalImages:
+                    product.images.join(
+                        "\n"
+                    ),
+
+                discount:
+                    product.discount,
+
+                promotion:
+                    product.promotion,
+
+                offer:
+                    product.promotion,
+
+                offers:
+                    product.promotion,
+
+                specs:
+                    product.specifications,
+
+                specifications:
+                    product.specifications,
+
+                description:
+                    product.description,
+
+                visible:
+                    product.visible,
+
+                adminToken:
+                    token
+
+            };
+
+
+            log(
+                "SAVE ACTION:",
+                action
+            );
+
+
+            log(
+                "SAVE PAYLOAD:",
+                {
+                    ...payload,
+                    adminToken:
+                        token
+                            ? "TOKEN_RECEIVED"
+                            : "NO_TOKEN"
+                }
+            );
+
+
             const data =
                 await apiPostAdmin(
                     action,
-                    product
+                    payload
                 );
 
 
@@ -2716,7 +2266,6 @@
 
             closeProductModal();
 
-
             await loadProducts();
 
         }
@@ -2743,7 +2292,7 @@
 
 
             setButtonLoading(
-                submitButton,
+                button,
                 false
             );
 
@@ -2752,101 +2301,261 @@
     }
 
 
-    // ============================================================
-    // GET FORM SUBMIT BUTTON
-    // ============================================================
+    // ========================================================
+    // READ FORM
+    // ========================================================
 
-    function getSubmitButton() {
+    function readProductFromForm() {
 
-        const form =
-            document.getElementById(
-                "productForm"
-            );
-
-
-        if (!form) {
-
-            return null;
-
-        }
+        const get =
+            id =>
+                document.getElementById(
+                    id
+                );
 
 
-        return (
-            form.querySelector(
-                'button[type="submit"]'
-            ) ||
-            form.querySelector(
-                "button.btn-primary"
-            ) ||
-            form.querySelector(
-                "button"
-            )
-        );
+        const product = {
+
+            id:
+                get("productId")
+                    ? String(
+                        get("productId").value ||
+                        ""
+                    ).trim()
+                    : "",
+
+
+            name:
+                get("productName")
+                    ? String(
+                        get("productName").value ||
+                        ""
+                    ).trim()
+                    : "",
+
+
+            price:
+                get("productPrice")
+                    ? toNumber(
+                        get("productPrice").value
+                    )
+                    : 0,
+
+
+            originalPrice:
+                get("productOriginalPrice")
+                    ? toNumber(
+                        get("productOriginalPrice").value
+                    )
+                    : 0,
+
+
+            category:
+                get("productCategory")
+                    ? String(
+                        get("productCategory").value ||
+                        ""
+                    ).trim()
+                    : "",
+
+
+            stock:
+                get("productStock")
+                    ? toNumber(
+                        get("productStock").value
+                    )
+                    : 0,
+
+
+            image:
+                get("productImage")
+                    ? String(
+                        get("productImage").value ||
+                        ""
+                    ).trim()
+                    : "",
+
+
+            images:
+                get("productImages")
+                    ? getLines(
+                        get("productImages").value
+                    )
+                    : [],
+
+
+            specifications:
+                get("productSpecifications")
+                    ? String(
+                        get("productSpecifications").value ||
+                        ""
+                    ).trim()
+                    : "",
+
+
+            promotion:
+                get("productPromotion")
+                    ? String(
+                        get("productPromotion").value ||
+                        ""
+                    ).trim()
+                    : "",
+
+
+            /*
+            Nếu HTML hiện tại chỉ có một ô
+            productPromotion thì coi đó là
+            Ưu đãi.
+
+            discount để rỗng.
+            */
+
+            discount:
+                "",
+
+
+            description:
+                get("productDescription")
+                    ? String(
+                        get("productDescription").value ||
+                        ""
+                    ).trim()
+                    : "",
+
+
+            visible:
+                get("productVisible")
+                    ? (
+                        get("productVisible").value ===
+                        "true"
+                    )
+                    : true
+
+        };
+
+
+        return product;
 
     }
 
 
-    // ============================================================
-    // BUTTON LOADING
-    // ============================================================
+    // ========================================================
+    // VALIDATE
+    // ========================================================
 
-    function setButtonLoading(
-        button,
-        loading,
-        loadingText
+    function validateProduct(
+        product
     ) {
 
-        if (!button) {
+        if (!product.id) {
 
-            return;
+            alert(
+                "Vui lòng nhập ID sản phẩm."
+            );
+
+            return false;
+
+        }
+
+
+        if (!product.name) {
+
+            alert(
+                "Vui lòng nhập tên sản phẩm."
+            );
+
+            return false;
 
         }
 
 
-        if (loading) {
+        if (!product.category) {
 
-            button.dataset.originalText =
-                button.textContent;
+            alert(
+                "Vui lòng nhập danh mục."
+            );
 
-
-            button.disabled =
-                true;
-
-
-            if (loadingText) {
-
-                button.textContent =
-                    loadingText;
-
-            }
+            return false;
 
         }
 
-        else {
 
-            button.disabled =
-                false;
+        if (
+            !Number.isFinite(
+                product.price
+            ) ||
+            product.price < 0
+        ) {
 
+            alert(
+                "Giá bán không hợp lệ."
+            );
+
+            return false;
+
+        }
+
+
+        if (
+            !Number.isFinite(
+                product.originalPrice
+            ) ||
+            product.originalPrice < 0
+        ) {
+
+            alert(
+                "Giá gốc không hợp lệ."
+            );
+
+            return false;
+
+        }
+
+
+        if (
+            product.originalPrice > 0 &&
+            product.price >
+            product.originalPrice
+        ) {
 
             if (
-                button.dataset.originalText
+                !confirm(
+                    "Giá bán đang cao hơn giá gốc.\n\n" +
+                    "Bạn vẫn muốn lưu sản phẩm?"
+                )
             ) {
 
-                button.textContent =
-                    button.dataset.originalText;
-
-                delete button.dataset.originalText;
+                return false;
 
             }
 
         }
+
+
+        if (
+            !Number.isFinite(
+                product.stock
+            ) ||
+            product.stock < 0
+        ) {
+
+            alert(
+                "Tồn kho không hợp lệ."
+            );
+
+            return false;
+
+        }
+
+
+        return true;
 
     }
 
 
-    // ============================================================
-    // DELETE PRODUCT
-    // ============================================================
+    // ========================================================
+    // DELETE
+    // ========================================================
 
     async function removeProduct(
         id
@@ -2859,13 +2568,7 @@
         }
 
 
-        const token =
-            getAdminToken();
-
-
-        if (!token) {
-
-            redirectToAdminLogin();
+        if (!requireAdminToken()) {
 
             return;
 
@@ -2874,14 +2577,13 @@
 
         const product =
             products.find(
-                function (item) {
-
-                    return String(
+                item =>
+                    normalizeId(
                         item.id
                     ) ===
-                        String(id);
-
-                }
+                    normalizeId(
+                        id
+                    )
             );
 
 
@@ -2891,16 +2593,14 @@
                 : id;
 
 
-        const confirmed =
-            confirm(
+        if (
+            !confirm(
                 "Bạn có chắc muốn xóa sản phẩm:\n\n" +
                 name +
                 "\n\n" +
                 "Hành động này không thể hoàn tác."
-            );
-
-
-        if (!confirmed) {
+            )
+        ) {
 
             return;
 
@@ -2917,10 +2617,8 @@
                 await apiPostAdmin(
                     "deleteProduct",
                     {
-
                         id:
                             id
-
                     }
                 );
 
@@ -2981,27 +2679,97 @@
     }
 
 
-    // ============================================================
-    // IMAGE PREVIEW SETUP
-    // ============================================================
+    // ========================================================
+    // MODAL
+    // ========================================================
+
+    function openProductModal() {
+
+        const modal =
+            document.getElementById(
+                "productModal"
+            );
+
+
+        if (!modal) {
+
+            alert(
+                "Không tìm thấy #productModal."
+            );
+
+            return;
+
+        }
+
+
+        modal.classList.add(
+            "active"
+        );
+
+    }
+
+
+    function closeProductModal() {
+
+        const modal =
+            document.getElementById(
+                "productModal"
+            );
+
+
+        if (modal) {
+
+            modal.classList.remove(
+                "active"
+            );
+
+        }
+
+
+        editingProductId =
+            null;
+
+
+        const id =
+            document.getElementById(
+                "productId"
+            );
+
+
+        if (id) {
+
+            id.disabled =
+                false;
+
+        }
+
+
+        clearImagePreviews();
+
+    }
+
+
+    // ========================================================
+    // IMAGE PREVIEW
+    // ========================================================
 
     function setupImagePreview() {
 
-        const mainImage =
+        const main =
             document.getElementById(
                 "productImage"
             );
 
 
-        const subImages =
+        const sub =
             document.getElementById(
                 "productImages"
             );
 
 
-        if (mainImage) {
+        if (main) {
 
-            mainImage.addEventListener(
+            main.addEventListener(
                 "input",
                 updateMainImagePreview
             );
@@ -3009,9 +2777,9 @@
         }
 
 
-        if (subImages) {
+        if (sub) {
 
-            subImages.addEventListener(
+            sub.addEventListener(
                 "input",
                 updateSubImagesPreview
             );
@@ -3020,10 +2788,6 @@
 
     }
 
-
-    // ============================================================
-    // MAIN IMAGE PREVIEW
-    // ============================================================
 
     function updateMainImagePreview() {
 
@@ -3075,10 +2839,6 @@
     }
 
 
-    // ============================================================
-    // SUB IMAGE PREVIEW
-    // ============================================================
-
     function updateSubImagesPreview() {
 
         const container =
@@ -3107,29 +2867,18 @@
             "";
 
 
-        const urls =
-            getLines(
-                input.value
-            );
-
-
-        urls.forEach(
-            function (url) {
-
+        getLines(
+            input.value
+        ).forEach(
+            url =>
                 appendImagePreview(
                     container,
                     url
-                );
-
-            }
+                )
         );
 
     }
 
-
-    // ============================================================
-    // APPEND IMAGE PREVIEW
-    // ============================================================
 
     function appendImagePreview(
         container,
@@ -3185,10 +2934,6 @@
     }
 
 
-    // ============================================================
-    // CLEAR IMAGE PREVIEWS
-    // ============================================================
-
     function clearImagePreviews() {
 
         const main =
@@ -3221,29 +2966,45 @@
     }
 
 
-    // ============================================================
-    // GET LINES
-    // ============================================================
+    // ========================================================
+    // HELPERS
+    // ========================================================
+
+    function setValue(
+        id,
+        value
+    ) {
+
+        const element =
+            document.getElementById(
+                id
+            );
+
+
+        if (element) {
+
+            element.value =
+                value ?? "";
+
+        }
+
+    }
+
 
     function getLines(
         value
     ) {
 
         if (
-            Array.isArray(
-                value
-            )
+            Array.isArray(value)
         ) {
 
             return value
                 .map(
-                    function (item) {
-
-                        return String(
+                    item =>
+                        String(
                             item ?? ""
-                        ).trim();
-
-                    }
+                        ).trim()
                 )
                 .filter(Boolean);
 
@@ -3263,8 +3024,6 @@
         }
 
 
-        // JSON array
-
         try {
 
             const parsed =
@@ -3274,20 +3033,15 @@
 
 
             if (
-                Array.isArray(
-                    parsed
-                )
+                Array.isArray(parsed)
             ) {
 
                 return parsed
                     .map(
-                        function (item) {
-
-                            return String(
+                        item =>
+                            String(
                                 item ?? ""
-                            ).trim();
-
-                        }
+                            ).trim()
                     )
                     .filter(Boolean);
 
@@ -3302,122 +3056,181 @@
         }
 
 
-        // New lines
-
-        if (
-            text.includes(
-                "\n"
+        return text
+            .split(/\r?\n|,/)
+            .map(
+                item =>
+                    item.trim()
             )
-        ) {
-
-            return text
-                .split(/\r?\n/)
-                .map(
-                    function (item) {
-
-                        return item.trim();
-
-                    }
-                )
-                .filter(Boolean);
-
-        }
-
-
-        // Comma-separated
-
-        if (
-            text.includes(",")
-        ) {
-
-            return text
-                .split(",")
-                .map(
-                    function (item) {
-
-                        return item.trim();
-
-                    }
-                )
-                .filter(Boolean);
-
-        }
-
-
-        return [text];
+            .filter(Boolean);
 
     }
 
 
-    // ============================================================
-    // CLICK OUTSIDE MODAL
-    // ============================================================
+    function normalizeId(
+        value
+    ) {
 
-    document.addEventListener(
-        "click",
-        function (event) {
+        return String(
+            value ?? ""
+        )
+            .trim()
+            .replace(
+                /\.0+$/,
+                ""
+            )
+            .toLowerCase();
 
-            const modal =
-                document.getElementById(
-                    "productModal"
-                );
+    }
 
 
-            if (
-                modal &&
-                event.target === modal
-            ) {
+    function isVisible(
+        value
+    ) {
 
-                closeProductModal();
+        if (
+            value === false ||
+            value === 0
+        ) {
+
+            return false;
+
+        }
+
+
+        const text =
+            String(
+                value ?? ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        return !(
+            text === "false" ||
+            text === "0" ||
+            text === "no" ||
+            text === "không" ||
+            text === "hidden" ||
+            text === "hide"
+        );
+
+    }
+
+
+    function formatMoney(
+        value
+    ) {
+
+        return toNumber(
+            value
+        ).toLocaleString(
+            "vi-VN"
+        ) +
+        " ₫";
+
+    }
+
+
+    function formatNumber(
+        value
+    ) {
+
+        return toNumber(
+            value
+        ).toLocaleString(
+            "vi-VN"
+        );
+
+    }
+
+
+    function getSubmitButton() {
+
+        const form =
+            document.getElementById(
+                "productForm"
+            );
+
+
+        if (!form) {
+
+            return null;
+
+        }
+
+
+        return (
+            form.querySelector(
+                'button[type="submit"]'
+            ) ||
+
+            form.querySelector(
+                "button.btn-primary"
+            ) ||
+
+            form.querySelector(
+                "button"
+            )
+        );
+
+    }
+
+
+    function setButtonLoading(
+        button,
+        loading,
+        text
+    ) {
+
+        if (!button) {
+
+            return;
+
+        }
+
+
+        if (loading) {
+
+            button.dataset.originalText =
+                button.textContent;
+
+
+            button.disabled =
+                true;
+
+
+            if (text) {
+
+                button.textContent =
+                    text;
 
             }
 
         }
-    );
 
+        else {
 
-    // ============================================================
-    // ESC
-    // ============================================================
-
-    document.addEventListener(
-        "keydown",
-        function (event) {
-
-            if (
-                event.key !==
-                "Escape"
-            ) {
-
-                return;
-
-            }
-
-
-            const modal =
-                document.getElementById(
-                    "productModal"
-                );
+            button.disabled =
+                false;
 
 
             if (
-                modal &&
-                modal.classList.contains(
-                    "active"
-                )
+                button.dataset.originalText
             ) {
 
-                closeProductModal();
+                button.textContent =
+                    button.dataset.originalText;
+
+
+                delete button.dataset.originalText;
 
             }
 
         }
-    );
 
+    }
 
-    // ============================================================
-    // LOADING
-    // ============================================================
 
     function showLoading(
         loading
@@ -3443,10 +3256,6 @@
 
     }
 
-
-    // ============================================================
-    // ERROR
-    // ============================================================
 
     function showError(
         message
@@ -3486,93 +3295,71 @@
     }
 
 
-    // ============================================================
-    // FORMAT MONEY
-    // ============================================================
+    // ========================================================
+    // MODAL EVENTS
+    // ========================================================
 
-    function formatMoney(
-        value
-    ) {
+    document.addEventListener(
+        "click",
+        function (event) {
 
-        const number =
-            toNumber(
-                value
-            );
-
-
-        return number.toLocaleString(
-            "vi-VN"
-        ) +
-        " ₫";
-
-    }
+            const modal =
+                document.getElementById(
+                    "productModal"
+                );
 
 
-    // ============================================================
-    // FORMAT NUMBER
-    // ============================================================
+            if (
+                modal &&
+                event.target === modal
+            ) {
 
-    function formatNumber(
-        value
-    ) {
+                closeProductModal();
 
-        return toNumber(
-            value
-        ).toLocaleString(
-            "vi-VN"
-        );
-
-    }
-
-
-    // ============================================================
-    // CHECK VISIBLE
-    // ============================================================
-
-    function isVisible(
-        value
-    ) {
-
-        if (
-            value === false ||
-            value === 0
-        ) {
-
-            return false;
+            }
 
         }
+    );
 
 
-        const text =
-            String(
-                value ?? ""
-            )
-                .trim()
-                .toLowerCase();
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key !==
+                "Escape"
+            ) {
+
+                return;
+
+            }
 
 
-        if (
-            text === "false" ||
-            text === "0" ||
-            text === "no" ||
-            text === "không" ||
-            text === "hidden" ||
-            text === "hide"
-        ) {
+            const modal =
+                document.getElementById(
+                    "productModal"
+                );
 
-            return false;
+
+            if (
+                modal &&
+                modal.classList.contains(
+                    "active"
+                )
+            ) {
+
+                closeProductModal();
+
+            }
 
         }
+    );
 
 
-        return true;
-
-    }
-
-
-    // ============================================================
-    // EXPOSE FUNCTIONS FOR HTML
-    // ============================================================
+    // ========================================================
+    // EXPOSE
+    // ========================================================
 
     window.openAddProduct =
         openAddProduct;
@@ -3594,9 +3381,9 @@
         removeProduct;
 
 
-    // ============================================================
-    // DOM READY
-    // ============================================================
+    // ========================================================
+    // START
+    // ========================================================
 
     if (
         document.readyState ===
@@ -3618,6 +3405,5 @@
         init();
 
     }
-
 
 })();
