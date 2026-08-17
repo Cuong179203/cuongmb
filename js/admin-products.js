@@ -4,8 +4,24 @@
 // CƯỜNG MOBILE
 // ADMIN PRODUCTS
 // FRONTEND ↔ GOOGLE APPS SCRIPT
-// SYNC WITH CODE.GS - SECURITY STEP 3
+//
+// MỤC TIÊU:
+// ADMIN SỬA SẢN PHẨM
+//        ↓
+// Hình ảnh chính      → Hình ảnh
+// Hình ảnh phụ        → Hình ảnh phụ
+// Khuyến mãi          → Khuyến mãi
+// Ưu đãi              → Ưu đãi
+// Thông số kỹ thuật   → Thông số kỹ thuật
+//        ↓
+// GOOGLE SHEETS
+//        ↓
+// GET PRODUCTS API
+//        ↓
+// TRANG CHI TIẾT SẢN PHẨM
+//
 // ============================================================
+
 
 // ============================================================
 // CONFIG
@@ -157,6 +173,10 @@ async function apiPostAdmin(
     };
 
     console.log(
+        "===================================="
+    );
+
+    console.log(
         "API POST:",
         action
     );
@@ -171,6 +191,10 @@ async function apiPostAdmin(
     console.log(
         "POST PAYLOAD:",
         payload
+    );
+
+    console.log(
+        "===================================="
     );
 
     const response =
@@ -232,10 +256,6 @@ async function apiPostAdmin(
         );
 
     }
-
-    // ========================================================
-    // ADMIN TOKEN INVALID
-    // ========================================================
 
     if (
         data &&
@@ -344,7 +364,15 @@ document.addEventListener(
 
         }
 
+        // ====================================================
+        // IMAGE PREVIEW
+        // ====================================================
+
         setupImagePreview();
+
+        // ====================================================
+        // LOAD
+        // ====================================================
 
         loadProducts();
 
@@ -428,6 +456,30 @@ async function loadProducts() {
             products.length
         );
 
+        // DEBUG QUAN TRỌNG
+        products.forEach(
+            function (product) {
+
+                console.log(
+                    "PRODUCT SYNC:",
+                    {
+                        id:
+                            product.id,
+
+                        image:
+                            product.image,
+
+                        images:
+                            product.images,
+
+                        imageCount:
+                            product.images.length
+                    }
+                );
+
+            }
+        );
+
         createCategoryFilter();
 
         renderProducts();
@@ -460,6 +512,15 @@ async function loadProducts() {
 // ============================================================
 // NORMALIZE PRODUCT
 // GAS → FRONTEND
+//
+// QUAN TRỌNG:
+// Cột Google Sheets:
+// "Hình ảnh"
+// "Hình ảnh phụ"
+// "Khuyến mãi"
+// "Ưu đãi"
+// "Thông số kỹ thuật"
+//
 // ============================================================
 
 function normalizeProduct(
@@ -468,6 +529,27 @@ function normalizeProduct(
 
     product =
         product || {};
+
+    const mainImage =
+        String(
+            product["Hình ảnh"] ??
+            product.image ??
+            ""
+        ).trim();
+
+    const galleryValue =
+        product["Hình ảnh phụ"] ??
+        product["Ảnh phụ"] ??
+        product.gallery ??
+        product.images ??
+        product.subImages ??
+        product.sub_images ??
+        "";
+
+    const gallery =
+        normalizeImages(
+            galleryValue
+        );
 
     return {
 
@@ -518,37 +600,30 @@ function normalizeProduct(
                 0
             ),
 
+        // ====================================================
+        // MAIN IMAGE
+        // ====================================================
+
         image:
-            String(
-                product["Hình ảnh"] ??
-                product.image ??
-                ""
-            ).trim(),
+            mainImage,
 
         // ====================================================
         // GALLERY
-        // GAS:
-        // Hình ảnh phụ
-        // response:
-        // gallery
+        //
+        // Đây chính là dữ liệu trang chi tiết sản phẩm cần.
         // ====================================================
 
         images:
-            normalizeImages(
-                product["Hình ảnh phụ"] ??
-                product.gallery ??
-                product.images ??
-                product.subImages ??
-                product.sub_images ??
-                ""
-            ),
+            gallery,
+
+        gallery:
+            gallery,
+
+        subImages:
+            gallery,
 
         // ====================================================
-        // DISCOUNT / PROMOTION
-        // GAS:
-        // Khuyến mãi
-        // response:
-        // discount
+        // PROMOTION
         // ====================================================
 
         discount:
@@ -560,12 +635,16 @@ function normalizeProduct(
                 ""
             ),
 
+        promotion:
+            normalizeText(
+                product["Khuyến mãi"] ??
+                product.promotion ??
+                product.discount ??
+                ""
+            ),
+
         // ====================================================
         // OFFER
-        // GAS:
-        // Ưu đãi
-        // response:
-        // offer
         // ====================================================
 
         offer:
@@ -581,6 +660,14 @@ function normalizeProduct(
         // ====================================================
 
         specifications:
+            normalizeText(
+                product["Thông số kỹ thuật"] ??
+                product.specifications ??
+                product.specs ??
+                ""
+            ),
+
+        specs:
             normalizeText(
                 product["Thông số kỹ thuật"] ??
                 product.specs ??
@@ -617,6 +704,13 @@ function normalizeProduct(
 
 // ============================================================
 // NORMALIZE IMAGES
+//
+// Hỗ trợ:
+// 1. Array
+// 2. JSON array
+// 3. Mỗi URL một dòng
+// 4. URL ngăn cách bằng dấu phẩy
+// 5. URL ngăn cách bằng |
 // ============================================================
 
 function normalizeImages(
@@ -632,7 +726,7 @@ function normalizeImages(
                 function (item) {
 
                     return String(
-                        item
+                        item ?? ""
                     ).trim();
 
                 }
@@ -672,7 +766,7 @@ function normalizeImages(
                     function (item) {
 
                         return String(
-                            item
+                            item ?? ""
                         ).trim();
 
                     }
@@ -685,23 +779,102 @@ function normalizeImages(
 
     catch (error) {
 
-        // Không phải JSON
+        // Không phải JSON.
+        // Tiếp tục xử lý text.
+
     }
 
     // ========================================================
     // NEW LINE
     // ========================================================
 
-    return text
-        .split(/\r?\n/)
-        .map(
-            function (item) {
+    let result =
+        text
+            .split(/\r?\n/)
+            .map(
+                function (item) {
 
-                return item.trim();
+                    return item.trim();
 
-            }
-        )
-        .filter(Boolean);
+                }
+            )
+            .filter(Boolean);
+
+    // ========================================================
+    // NẾU CHỈ CÓ 1 DÒNG NHƯNG DÙNG "|" 
+    // ========================================================
+
+    if (
+        result.length === 1 &&
+        result[0].includes("|")
+    ) {
+
+        result =
+            result[0]
+                .split("|")
+                .map(
+                    function (item) {
+
+                        return item.trim();
+
+                    }
+                )
+                .filter(Boolean);
+
+    }
+
+    // ========================================================
+    // NẾU CHỈ CÓ 1 DÒNG NHƯNG DÙNG ","
+    //
+    // Chỉ tách nếu tất cả phần nhìn giống URL.
+    // ========================================================
+
+    if (
+        result.length === 1 &&
+        result[0].includes(",")
+    ) {
+
+        const commaParts =
+            result[0]
+                .split(",")
+                .map(
+                    function (item) {
+
+                        return item.trim();
+
+                    }
+                )
+                .filter(Boolean);
+
+        if (
+            commaParts.length > 1 &&
+            commaParts.every(
+                function (item) {
+
+                    return (
+                        item.startsWith(
+                            "http://"
+                        ) ||
+                        item.startsWith(
+                            "https://"
+                        ) ||
+                        item.startsWith(
+                            "data:image/"
+                        )
+                    );
+
+                }
+            )
+        ) {
+
+            result =
+                commaParts;
+
+        }
+
+    }
+
+    return result;
 
 }
 
@@ -723,7 +896,7 @@ function normalizeText(
                 function (item) {
 
                     return String(
-                        item
+                        item ?? ""
                     ).trim();
 
                 }
@@ -775,7 +948,9 @@ function normalizeBoolean(
         text === "false" ||
         text === "0" ||
         text === "no" ||
-        text === "không"
+        text === "không" ||
+        text === "hidden" ||
+        text === "hide"
     ) {
 
         return false;
@@ -973,9 +1148,7 @@ function renderProducts() {
             }
         );
 
-    if (
-        table
-    ) {
+    if (table) {
 
         table.style.display =
             filtered.length
@@ -984,9 +1157,7 @@ function renderProducts() {
 
     }
 
-    if (
-        empty
-    ) {
+    if (empty) {
 
         empty.style.display =
             filtered.length
@@ -1038,6 +1209,17 @@ function renderProducts() {
 
                 img.style.objectFit =
                     "cover";
+
+                img.onerror =
+                    function () {
+
+                        img.style.display =
+                            "none";
+
+                        imageCell.textContent =
+                            "Ảnh lỗi";
+
+                    };
 
                 imageCell.appendChild(
                     img
@@ -1392,6 +1574,10 @@ function editProduct(
 
     }
 
+    // ========================================================
+    // BASIC
+    // ========================================================
+
     setValue(
         "productId",
         product.id
@@ -1422,10 +1608,26 @@ function editProduct(
         product.stock
     );
 
+    // ========================================================
+    // MAIN IMAGE
+    // ========================================================
+
     setValue(
         "productImage",
         product.image
     );
+
+    // ========================================================
+    // SUB IMAGES
+    //
+    // Đây là phần quan trọng nhất.
+    //
+    // product.images đã được lấy từ:
+    // "Hình ảnh phụ"
+    //
+    // Khi mở modal sửa:
+    // array → mỗi URL một dòng.
+    // ========================================================
 
     setValue(
         "productImages",
@@ -1434,25 +1636,45 @@ function editProduct(
         )
     );
 
+    // ========================================================
+    // PROMOTION
+    // ========================================================
+
     setValue(
         "productPromotion",
         product.discount
     );
+
+    // ========================================================
+    // OFFER
+    // ========================================================
 
     setValue(
         "productOffer",
         product.offer
     );
 
+    // ========================================================
+    // SPECIFICATIONS
+    // ========================================================
+
     setValue(
         "productSpecifications",
         product.specifications
     );
 
+    // ========================================================
+    // DESCRIPTION
+    // ========================================================
+
     setValue(
         "productDescription",
         product.description
     );
+
+    // ========================================================
+    // VISIBILITY
+    // ========================================================
 
     setValue(
         "productVisible",
@@ -1472,6 +1694,10 @@ function editProduct(
             true;
 
     }
+
+    // ========================================================
+    // PREVIEW
+    // ========================================================
 
     updateMainImagePreview();
 
@@ -1675,7 +1901,22 @@ async function saveProduct(
         );
 
     // ========================================================
-    // PRODUCT
+    // GALLERY
+    //
+    // Mỗi dòng = 1 ảnh.
+    //
+    // Ví dụ:
+    //
+    // https://abc.com/1.jpg
+    // https://abc.com/2.jpg
+    // https://abc.com/3.jpg
+    //
+    // Sẽ gửi:
+    //
+    // gallery:  [url1, url2, url3]
+    // images:   [url1, url2, url3]
+    // subImages:[url1, url2, url3]
+    //
     // ========================================================
 
     const gallery =
@@ -1684,6 +1925,10 @@ async function saveProduct(
                 productImagesElement.value
             )
             : [];
+
+    // ========================================================
+    // PRODUCT
+    // ========================================================
 
     const product = {
 
@@ -1724,24 +1969,33 @@ async function saveProduct(
                 )
                 : 0,
 
+        // ====================================================
+        // MAIN IMAGE
+        // ====================================================
+
         image:
             productImageElement
                 ? productImageElement.value.trim()
                 : "",
 
         // ====================================================
-        // GAS: gallery
+        // GALLERY
+        //
+        // Code.gs cần dữ liệu này để ghi vào:
+        // "Hình ảnh phụ"
         // ====================================================
 
         gallery:
             gallery,
 
-        // giữ alias để tương thích frontend cũ
         images:
             gallery,
 
+        subImages:
+            gallery,
+
         // ====================================================
-        // GAS: discount
+        // PROMOTION
         // ====================================================
 
         discount:
@@ -1749,8 +2003,13 @@ async function saveProduct(
                 ? productPromotionElement.value.trim()
                 : "",
 
+        promotion:
+            productPromotionElement
+                ? productPromotionElement.value.trim()
+                : "",
+
         // ====================================================
-        // GAS: offer
+        // OFFER
         // ====================================================
 
         offer:
@@ -1759,7 +2018,7 @@ async function saveProduct(
                 : "",
 
         // ====================================================
-        // GAS: specs
+        // SPECIFICATIONS
         // ====================================================
 
         specs:
@@ -1767,10 +2026,23 @@ async function saveProduct(
                 ? productSpecificationsElement.value.trim()
                 : "",
 
+        specifications:
+            productSpecificationsElement
+                ? productSpecificationsElement.value.trim()
+                : "",
+
+        // ====================================================
+        // DESCRIPTION
+        // ====================================================
+
         description:
             productDescriptionElement
                 ? productDescriptionElement.value.trim()
                 : "",
+
+        // ====================================================
+        // VISIBILITY
+        // ====================================================
 
         visible:
             productVisibleElement
@@ -1781,7 +2053,38 @@ async function saveProduct(
     };
 
     // ========================================================
-    // VALIDATE
+    // DEBUG GALLERY
+    // ========================================================
+
+    console.log(
+        "===================================="
+    );
+
+    console.log(
+        "SAVE PRODUCT GALLERY:"
+    );
+
+    console.log(
+        "MAIN IMAGE:",
+        product.image
+    );
+
+    console.log(
+        "SUB IMAGES:",
+        product.gallery
+    );
+
+    console.log(
+        "SUB IMAGE COUNT:",
+        product.gallery.length
+    );
+
+    console.log(
+        "===================================="
+    );
+
+    // ========================================================
+    // VALIDATE ID
     // ========================================================
 
     if (!product.id) {
@@ -1794,6 +2097,10 @@ async function saveProduct(
 
     }
 
+    // ========================================================
+    // VALIDATE NAME
+    // ========================================================
+
     if (!product.name) {
 
         alert(
@@ -1804,6 +2111,10 @@ async function saveProduct(
 
     }
 
+    // ========================================================
+    // VALIDATE CATEGORY
+    // ========================================================
+
     if (!product.category) {
 
         alert(
@@ -1813,6 +2124,10 @@ async function saveProduct(
         return;
 
     }
+
+    // ========================================================
+    // VALIDATE PRICE
+    // ========================================================
 
     if (
         !Number.isFinite(
@@ -1829,6 +2144,10 @@ async function saveProduct(
 
     }
 
+    // ========================================================
+    // VALIDATE ORIGINAL PRICE
+    // ========================================================
+
     if (
         !Number.isFinite(
             product.originalPrice
@@ -1843,6 +2162,10 @@ async function saveProduct(
         return;
 
     }
+
+    // ========================================================
+    // PRICE CHECK
+    // ========================================================
 
     if (
         product.originalPrice > 0 &&
@@ -1862,6 +2185,10 @@ async function saveProduct(
         }
 
     }
+
+    // ========================================================
+    // STOCK
+    // ========================================================
 
     if (
         !Number.isInteger(
@@ -1889,16 +2216,152 @@ async function saveProduct(
 
     try {
 
+        // ====================================================
+        // PAYLOAD
+        // ====================================================
+
+        const payload = {
+
+            action:
+                action,
+
+            id:
+                product.id,
+
+            name:
+                product.name,
+
+            price:
+                product.price,
+
+            originalPrice:
+                product.originalPrice,
+
+            category:
+                product.category,
+
+            stock:
+                product.stock,
+
+            // =================================================
+            // MAIN IMAGE
+            // =================================================
+
+            image:
+                product.image,
+
+            // =================================================
+            // GALLERY
+            //
+            // Gửi nhiều alias để Code.gs/frontend hiện tại
+            // đều có thể nhận đúng dữ liệu.
+            // =================================================
+
+            gallery:
+                product.gallery,
+
+            images:
+                product.gallery,
+
+            subImages:
+                product.gallery,
+
+            // =================================================
+            // PROMOTION
+            // =================================================
+
+            discount:
+                product.discount,
+
+            promotion:
+                product.promotion,
+
+            // =================================================
+            // OFFER
+            // =================================================
+
+            offer:
+                product.offer,
+
+            // =================================================
+            // SPECIFICATIONS
+            // =================================================
+
+            specs:
+                product.specs,
+
+            specifications:
+                product.specifications,
+
+            // =================================================
+            // DESCRIPTION
+            // =================================================
+
+            description:
+                product.description,
+
+            // =================================================
+            // VISIBILITY
+            // =================================================
+
+            visible:
+                product.visible,
+
+            // =================================================
+            // ADMIN TOKEN
+            // =================================================
+
+            adminToken:
+                token
+
+        };
+
+        console.log(
+            "===================================="
+        );
+
+        console.log(
+            "SAVE PAYLOAD:"
+        );
+
+        console.log(
+            payload
+        );
+
+        console.log(
+            "GALLERY:",
+            payload.gallery
+        );
+
+        console.log(
+            "GALLERY JSON:",
+            JSON.stringify(
+                payload.gallery
+            )
+        );
+
+        console.log(
+            "===================================="
+        );
+
+        // ====================================================
+        // API
+        // ====================================================
+
         const data =
             await apiPostAdmin(
                 action,
-                product
+                payload
             );
 
         console.log(
             "SAVE RESPONSE:",
             data
         );
+
+        // ====================================================
+        // CHECK
+        // ====================================================
 
         if (
             !data ||
@@ -1919,7 +2382,23 @@ async function saveProduct(
             "Đã lưu sản phẩm."
         );
 
+        // ====================================================
+        // CLOSE
+        // ====================================================
+
         closeProductModal();
+
+        // ====================================================
+        // RELOAD FROM GAS
+        //
+        // Quan trọng:
+        // Không tự cập nhật products[] bằng dữ liệu form.
+        //
+        // Phải lấy lại từ Google Sheets thông qua API.
+        //
+        // Như vậy nếu API trả sai Hình ảnh phụ,
+        // console sẽ phát hiện ngay.
+        // ====================================================
 
         await loadProducts();
 
@@ -2279,7 +2758,7 @@ function getLines(
                 function (item) {
 
                     return String(
-                        item
+                        item ?? ""
                     ).trim();
 
                 }
@@ -2288,9 +2767,18 @@ function getLines(
 
     }
 
-    return String(
-        value ?? ""
-    )
+    const text =
+        String(
+            value ?? ""
+        ).trim();
+
+    if (!text) {
+
+        return [];
+
+    }
+
+    return text
         .split(/\r?\n/)
         .map(
             function (item) {
@@ -2424,3 +2912,9 @@ window.openProductModal =
 
 window.closeProductModal =
     closeProductModal;
+
+window.updateMainImagePreview =
+    updateMainImagePreview;
+
+window.updateSubImagesPreview =
+    updateSubImagesPreview;
