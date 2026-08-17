@@ -1,7 +1,5 @@
-// ========================================
-// CƯỜNG MOBILE
-// PRODUCTS.JS
-// ========================================
+
+"use strict";
 
 const API_URL =
     "https://script.google.com/macros/s/AKfycbxxQRkcRL5BrTEdH28baGNOIyYa-I2vKiYkbQ_ChiMICpqRLSayBpaCM_N44Kn8jtV3/exec";
@@ -26,13 +24,14 @@ async function loadProducts() {
         );
 
         if (!response.ok) {
+
             throw new Error(
                 "HTTP " + response.status
             );
+
         }
 
-        const data =
-            await response.json();
+        const data = await response.json();
 
         console.log(
             "PRODUCT API:",
@@ -40,10 +39,12 @@ async function loadProducts() {
         );
 
         if (!data.success) {
+
             throw new Error(
                 data.error ||
                 "API trả về lỗi."
             );
+
         }
 
         products =
@@ -60,7 +61,9 @@ async function loadProducts() {
 
         return products;
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(
             "LOAD PRODUCTS ERROR:",
@@ -70,54 +73,111 @@ async function loadProducts() {
         products = [];
 
         throw error;
+
     }
+
 }
 
 
 // ========================================
 // NORMALIZE PRODUCT
+//
+// CHỈ NHẬN:
+//
+// 1. Hình ảnh       -> ảnh chính
+// 2. Hình ảnh phụ   -> ảnh phụ
+//
+// KHÔNG NHẬN:
+//
+// Hình ảnh 2
+// Hình ảnh 3
+// Hình ảnh 4
+// Hình ảnh 5
+// image2
+// image3
+// image4
+// image5
 // ========================================
 
 function normalizeProduct(product) {
 
+    product = product || {};
+
+
+    // ====================================
+    // ẢNH CHÍNH
+    // ====================================
+
+    const mainImage =
+        String(
+            product["Hình ảnh"] ??
+            product.image ??
+            ""
+        ).trim();
+
+
+    // ====================================
+    // ẢNH PHỤ
+    //
+    // Chỉ lấy từ:
+    //
+    // Hình ảnh phụ
+    // Ảnh phụ
+    // images
+    // subImages
+    // sub_images
+    //
+    // KHÔNG lấy Hình ảnh 2/3/4/5
+    // ====================================
+
+    const subImages =
+        normalizeSubImages(
+            product["Hình ảnh phụ"] ??
+            product["Ảnh phụ"] ??
+            product.images ??
+            product.subImages ??
+            product.sub_images ??
+            ""
+        );
+
+
+    // ====================================
+    // TẠO GALLERY
+    //
+    // ẢNH CHÍNH luôn đứng đầu.
+    //
+    // Ảnh phụ đứng sau.
+    //
+    // Loại ảnh trùng.
+    // ====================================
+
     const imageList = [];
 
-    const possibleImages = [
+    if (mainImage) {
 
-        product["Hình ảnh"],
-        product.image,
+        imageList.push(
+            mainImage
+        );
 
-        product["Hình ảnh 2"],
-        product.image2,
+    }
 
-        product["Hình ảnh 3"],
-        product.image3,
 
-        product["Hình ảnh 4"],
-        product.image4,
+    subImages.forEach(
+        function (image) {
 
-        product["Hình ảnh 5"],
-        product.image5
+            if (
+                image &&
+                imageList.indexOf(image) === -1
+            ) {
 
-    ];
+                imageList.push(
+                    image
+                );
 
-    possibleImages.forEach(function (image) {
-
-        const value =
-            String(
-                image ?? ""
-            ).trim();
-
-        if (
-            value &&
-            imageList.indexOf(value) === -1
-        ) {
-
-            imageList.push(value);
+            }
 
         }
-
-    });
+    );
 
 
     // ====================================
@@ -142,7 +202,7 @@ function normalizeProduct(product) {
 
 
     // ====================================
-    // TÍNH PHẦN TRĂM GIẢM
+    // GIẢM GIÁ
     // ====================================
 
     let discountPercent = 0;
@@ -175,6 +235,10 @@ function normalizeProduct(product) {
         product.specs ??
         "";
 
+
+    // ====================================
+    // RETURN
+    // ====================================
 
     return {
 
@@ -226,27 +290,27 @@ function normalizeProduct(product) {
             ) || 0,
 
 
-        image:
-            imageList.length > 0
-                ? imageList[0]
-                : "",
+        // =================================
+        // ẢNH CHÍNH
+        // =================================
 
+        image:
+            mainImage,
+
+
+        // =================================
+        // GALLERY
+        //
+        // [ảnh chính, ảnh phụ 1, ảnh phụ 2...]
+        // =================================
 
         images:
             imageList,
 
 
-        image2:
-            imageList[1] || "",
-
-        image3:
-            imageList[2] || "",
-
-        image4:
-            imageList[3] || "",
-
-        image5:
-            imageList[4] || "",
+        // =================================
+        // KHÔNG CÒN image2-image5
+        // =================================
 
 
         offer:
@@ -278,6 +342,108 @@ function normalizeProduct(product) {
             true
 
     };
+
+}
+
+
+// ========================================
+// NORMALIZE ẢNH PHỤ
+// ========================================
+
+function normalizeSubImages(value) {
+
+    // ====================================
+    // Nếu API trả Array
+    // ====================================
+
+    if (Array.isArray(value)) {
+
+        return value
+            .map(
+                function (image) {
+
+                    return String(
+                        image ?? ""
+                    ).trim();
+
+                }
+            )
+            .filter(Boolean);
+
+    }
+
+
+    const text =
+        String(
+            value ?? ""
+        ).trim();
+
+
+    if (!text) {
+
+        return [];
+
+    }
+
+
+    // ====================================
+    // Nếu là JSON Array
+    //
+    // Ví dụ:
+    //
+    // ["url1","url2","url3"]
+    // ====================================
+
+    try {
+
+        const parsed =
+            JSON.parse(
+                text
+            );
+
+
+        if (
+            Array.isArray(parsed)
+        ) {
+
+            return parsed
+                .map(
+                    function (image) {
+
+                        return String(
+                            image ?? ""
+                        ).trim();
+
+                    }
+                )
+                .filter(Boolean);
+
+        }
+
+    }
+
+    catch (error) {
+
+        // Không phải JSON
+        // tiếp tục xử lý text
+
+    }
+
+
+    // ====================================
+    // Nếu nhập mỗi URL một dòng
+    // ====================================
+
+    return text
+        .split(/\r?\n/)
+        .map(
+            function (image) {
+
+                return image.trim();
+
+            }
+        )
+        .filter(Boolean);
 
 }
 

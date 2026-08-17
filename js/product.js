@@ -1,7 +1,3 @@
-// ========================================
-// CƯỜNG MOBILE
-// PRODUCT.JS
-// ========================================
 
 document.addEventListener(
     "DOMContentLoaded",
