@@ -2,6 +2,7 @@
 <html lang="vi">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -837,6 +838,7 @@
         }
 
     </style>
+
 </head>
 
 
@@ -844,19 +846,23 @@
 
 <div class="product-admin">
 
-    <!-- HEADER -->
+    <!-- =====================================================
+         HEADER
+    ===================================================== -->
 
     <div class="product-admin-header">
 
         <div>
 
             <h1>
+
                 <a
                     href="admin.html"
                     class="logo"
                 >
                     📦 Quản lý sản phẩm
                 </a>
+
             </h1>
 
             <p>
@@ -865,10 +871,11 @@
 
         </div>
 
+
         <button
             type="button"
             class="btn-primary"
-            onclick="openAddProduct()"
+            id="btnAddProduct"
         >
             + Thêm sản phẩm
         </button>
@@ -876,7 +883,9 @@
     </div>
 
 
-    <!-- TOOLBAR -->
+    <!-- =====================================================
+         TOOLBAR
+    ===================================================== -->
 
     <div class="product-toolbar">
 
@@ -886,6 +895,7 @@
             placeholder="🔎 Tìm tên hoặc ID sản phẩm..."
             autocomplete="off"
         >
+
 
         <select id="categoryFilter">
 
@@ -898,7 +908,9 @@
     </div>
 
 
-    <!-- PRODUCT LIST -->
+    <!-- =====================================================
+         PRODUCT LIST
+    ===================================================== -->
 
     <div class="product-list">
 
@@ -929,29 +941,30 @@
 
                 <thead>
 
-                <tr>
+                    <tr>
 
-                    <th>Ảnh</th>
+                        <th>Ảnh</th>
 
-                    <th>ID</th>
+                        <th>ID</th>
 
-                    <th>Sản phẩm</th>
+                        <th>Sản phẩm</th>
 
-                    <th>Danh mục</th>
+                        <th>Danh mục</th>
 
-                    <th>Giá bán</th>
+                        <th>Giá bán</th>
 
-                    <th>Giá gốc</th>
+                        <th>Giá gốc</th>
 
-                    <th>Ưu đãi</th>
+                        <th>Ưu đãi</th>
 
-                    <th>Tồn kho</th>
+                        <th>Tồn kho</th>
 
-                    <th>Thao tác</th>
+                        <th>Thao tác</th>
 
-                </tr>
+                    </tr>
 
                 </thead>
+
 
                 <tbody id="productBody"></tbody>
 
@@ -964,27 +977,38 @@
 </div>
 
 
-<!-- ==================================================
-     MODAL
-================================================== -->
+<!-- =====================================================
+     PRODUCT MODAL
+===================================================== -->
 
 <div
     id="productModal"
     class="modal"
+    aria-hidden="true"
 >
 
-    <div class="modal-box">
+    <div
+        class="modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+    >
 
         <h2 id="modalTitle">
             Thêm sản phẩm
         </h2>
 
 
-        <form id="productForm">
+        <form
+            id="productForm"
+            autocomplete="off"
+        >
 
             <div class="form-grid">
 
-                <!-- ID -->
+                <!-- =================================================
+                     ID
+                ================================================== -->
 
                 <div class="form-group">
 
@@ -995,6 +1019,7 @@
                     <input
                         type="text"
                         id="productId"
+                        name="productId"
                         placeholder="VD: SP001"
                         required
                     >
@@ -1002,7 +1027,9 @@
                 </div>
 
 
-                <!-- TÊN -->
+                <!-- =================================================
+                     TÊN
+                ================================================== -->
 
                 <div class="form-group">
 
@@ -1013,6 +1040,7 @@
                     <input
                         type="text"
                         id="productName"
+                        name="productName"
                         placeholder="VD: iPhone 15 Pro Max"
                         required
                     >
@@ -1020,7 +1048,9 @@
                 </div>
 
 
-                <!-- GIÁ BÁN -->
+                <!-- =================================================
+                     GIÁ BÁN
+                ================================================== -->
 
                 <div class="form-group">
 
@@ -1031,6 +1061,7 @@
                     <input
                         type="number"
                         id="productPrice"
+                        name="productPrice"
                         min="0"
                         step="1"
                         placeholder="VD: 25000000"
@@ -1040,7 +1071,9 @@
                 </div>
 
 
-                <!-- GIÁ GỐC -->
+                <!-- =================================================
+                     GIÁ GỐC
+                ================================================== -->
 
                 <div class="form-group">
 
@@ -1051,6 +1084,7 @@
                     <input
                         type="number"
                         id="productOriginalPrice"
+                        name="productOriginalPrice"
                         min="0"
                         step="1"
                         placeholder="VD: 29990000"
@@ -1063,7 +1097,9 @@
                 </div>
 
 
-                <!-- DANH MỤC -->
+                <!-- =================================================
+                     DANH MỤC
+                ================================================== -->
 
                 <div class="form-group">
 
@@ -1074,6 +1110,7 @@
                     <input
                         type="text"
                         id="productCategory"
+                        name="productCategory"
                         placeholder="VD: Điện thoại"
                         required
                     >
@@ -1081,7 +1118,9 @@
                 </div>
 
 
-                <!-- TỒN KHO -->
+                <!-- =================================================
+                     TỒN KHO
+                ================================================== -->
 
                 <div class="form-group">
 
@@ -1092,6 +1131,7 @@
                     <input
                         type="number"
                         id="productStock"
+                        name="productStock"
                         min="0"
                         step="1"
                         placeholder="VD: 10"
@@ -1101,7 +1141,9 @@
                 </div>
 
 
-                <!-- ẢNH CHÍNH -->
+                <!-- =================================================
+                     ẢNH CHÍNH
+                ================================================== -->
 
                 <div class="form-group full">
 
@@ -1112,6 +1154,7 @@
                     <input
                         type="text"
                         id="productImage"
+                        name="productImage"
                         placeholder="https://.../iphone.jpg"
                     >
 
@@ -1127,7 +1170,9 @@
                 </div>
 
 
-                <!-- ẢNH PHỤ -->
+                <!-- =================================================
+                     ẢNH PHỤ
+                ================================================== -->
 
                 <div class="form-group full">
 
@@ -1137,6 +1182,7 @@
 
                     <textarea
                         id="productImages"
+                        name="productImages"
                         rows="5"
                         placeholder="https://.../image-2.jpg&#10;https://.../image-3.jpg&#10;https://.../image-4.jpg"
                     ></textarea>
@@ -1153,7 +1199,9 @@
                 </div>
 
 
-                <!-- THÔNG SỐ KỸ THUẬT -->
+                <!-- =================================================
+                     THÔNG SỐ KỸ THUẬT
+                ================================================== -->
 
                 <div class="form-group full">
 
@@ -1163,6 +1211,7 @@
 
                     <textarea
                         id="productSpecifications"
+                        name="productSpecifications"
                         rows="8"
                         placeholder="Màn hình: 6.7 inch Super Retina XDR&#10;Chip: Apple A17 Pro&#10;RAM: 8GB&#10;Bộ nhớ: 256GB&#10;Camera: 48MP&#10;Pin: 4422mAh"
                     ></textarea>
@@ -1175,7 +1224,9 @@
                 </div>
 
 
-                <!-- ƯU ĐÃI -->
+                <!-- =================================================
+                     ƯU ĐÃI
+                ================================================== -->
 
                 <div class="form-group full">
 
@@ -1185,6 +1236,7 @@
 
                     <textarea
                         id="productPromotion"
+                        name="productPromotion"
                         rows="6"
                         placeholder="Tặng kính cường lực&#10;Tặng ốp lưng chính hãng&#10;Hỗ trợ trả góp 0%&#10;Miễn phí giao hàng"
                     ></textarea>
@@ -1196,7 +1248,9 @@
                 </div>
 
 
-                <!-- MÔ TẢ -->
+                <!-- =================================================
+                     MÔ TẢ
+                ================================================== -->
 
                 <div class="form-group full">
 
@@ -1206,6 +1260,7 @@
 
                     <textarea
                         id="productDescription"
+                        name="productDescription"
                         rows="6"
                         placeholder="Nhập mô tả sản phẩm..."
                     ></textarea>
@@ -1213,7 +1268,9 @@
                 </div>
 
 
-                <!-- HIỂN THỊ -->
+                <!-- =================================================
+                     HIỂN THỊ
+                ================================================== -->
 
                 <div class="form-group">
 
@@ -1221,7 +1278,10 @@
                         Hiển thị sản phẩm
                     </label>
 
-                    <select id="productVisible">
+                    <select
+                        id="productVisible"
+                        name="productVisible"
+                    >
 
                         <option value="true">
                             Có
@@ -1238,17 +1298,20 @@
             </div>
 
 
-            <!-- BUTTON -->
+            <!-- =================================================
+                 BUTTON
+            ================================================== -->
 
             <div class="modal-buttons">
 
                 <button
                     type="button"
                     class="btn-cancel"
-                    onclick="closeProductModal()"
+                    id="btnCancelProduct"
                 >
                     Hủy
                 </button>
+
 
                 <button
                     type="submit"
@@ -1266,7 +1329,79 @@
 </div>
 
 
+<!-- =====================================================
+     JS
+===================================================== -->
+
 <script src="js/admin-products.js"></script>
+
+
+<!-- =====================================================
+     CHỈ GÁN EVENT CHO BUTTON HTML
+     KHÔNG ĐỤNG VÀO LOGIC admin-products.js
+===================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const addButton =
+            document.getElementById(
+                "btnAddProduct"
+            );
+
+        if (addButton) {
+
+            addButton.addEventListener(
+                "click",
+                function () {
+
+                    if (
+                        typeof window.openAddProduct ===
+                        "function"
+                    ) {
+
+                        window.openAddProduct();
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        const cancelButton =
+            document.getElementById(
+                "btnCancelProduct"
+            );
+
+        if (cancelButton) {
+
+            cancelButton.addEventListener(
+                "click",
+                function () {
+
+                    if (
+                        typeof window.closeProductModal ===
+                        "function"
+                    ) {
+
+                        window.closeProductModal();
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
 
 </body>
 
