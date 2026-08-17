@@ -1,4 +1,4 @@
-
+"use strict";
 document.addEventListener(
     "DOMContentLoaded",
     async function () {
@@ -7,16 +7,20 @@ document.addEventListener(
             "PRODUCT PAGE START"
         );
 
+
         try {
 
             await window.productsReady;
+
 
             console.log(
                 "Products ready:",
                 products
             );
 
+
             showProduct();
+
 
             updateCartCount();
 
@@ -29,10 +33,12 @@ document.addEventListener(
                 error
             );
 
+
             const container =
                 document.getElementById(
                     "product-detail"
                 );
+
 
             if (container) {
 
@@ -95,6 +101,7 @@ function showProduct() {
             "product-detail"
         );
 
+
     if (!container) {
 
         console.error(
@@ -156,6 +163,10 @@ function showProduct() {
         " - Cường Mobile";
 
 
+    // ====================================
+    // STOCK
+    // ====================================
+
     const stock =
         Number(
             product.stock || 0
@@ -168,35 +179,87 @@ function showProduct() {
             : "Hết hàng";
 
 
-    const images =
-        Array.isArray(
-            product.images
-        )
-            ? product.images
-            : [];
+    // ====================================
+    // IMAGE GALLERY
+    //
+    // CHỈ DÙNG:
+    //
+    // product.images
+    //
+    // Không tự lấy image2-image5.
+    // ====================================
+
+    let images = Array.isArray(
+        product.images
+    )
+        ? [...product.images]
+        : [];
 
 
-    // Nếu dữ liệu cũ chỉ có image
+    // ====================================
+    // FALLBACK
+    //
+    // Nếu images rỗng nhưng có ảnh chính
+    // thì dùng ảnh chính.
+    // ====================================
+
     if (
         images.length === 0 &&
         product.image
     ) {
 
-        images.push(
+        images = [
             product.image
-        );
+        ];
 
     }
+
+
+    // ====================================
+    // LOẠI ẢNH RỖNG + TRÙNG
+    // ====================================
+
+    images =
+        images
+            .map(
+                function (image) {
+
+                    return String(
+                        image ?? ""
+                    ).trim();
+
+                }
+            )
+            .filter(Boolean)
+            .filter(
+                function (
+                    image,
+                    index,
+                    array
+                ) {
+
+                    return (
+                        array.indexOf(image) ===
+                        index
+                    );
+
+                }
+            );
 
 
     const mainImage =
         images[0] || "";
 
 
+    // ====================================
+    // PRICE
+    // ====================================
+
     const hasOriginalPrice =
         Number(
             product.originalPrice
-        ) > Number(
+        ) >
+        Number(
             product.price
         );
 
@@ -206,6 +269,10 @@ function showProduct() {
             product.discountPercent
         ) || 0;
 
+
+    // ====================================
+    // OFFER
+    // ====================================
 
     const offerHTML =
         product.offer
@@ -232,6 +299,10 @@ function showProduct() {
             `
             : "";
 
+
+    // ====================================
+    // PRICE HTML
+    // ====================================
 
     const priceHTML = `
 
@@ -282,6 +353,12 @@ function showProduct() {
     `;
 
 
+    // ====================================
+    // THUMBNAILS
+    //
+    // Chỉ render product.images
+    // ====================================
+
     const thumbnailsHTML =
         images.length > 0
             ? `
@@ -291,7 +368,6 @@ function showProduct() {
                     id="product-thumbnails">
 
                     ${
-
                         images
                             .map(
                                 function (
@@ -339,11 +415,19 @@ function showProduct() {
             : "";
 
 
+    // ====================================
+    // SPECIFICATIONS
+    // ====================================
+
     const specificationsHTML =
         renderSpecifications(
             product.specifications
         );
 
+
+    // ====================================
+    // PRODUCT HTML
+    // ====================================
 
     container.innerHTML = `
 
@@ -374,16 +458,32 @@ function showProduct() {
                     }
 
 
-                    <img
-                        src="${escapeHTML(
-                            mainImage
-                        )}"
-                        alt="${escapeHTML(
-                            product.name
-                        )}"
-                        id="product-image"
-                        class="product-main-image"
-                    >
+                    ${
+                        mainImage
+                            ? `
+
+                                <img
+                                    src="${escapeHTML(
+                                        mainImage
+                                    )}"
+                                    alt="${escapeHTML(
+                                        product.name
+                                    )}"
+                                    id="product-image"
+                                    class="product-main-image"
+                                >
+
+                            `
+                            : `
+
+                                <div class="image-error">
+
+                                    Không có hình ảnh sản phẩm.
+
+                                </div>
+
+                            `
+                    }
 
 
                     <div
@@ -402,7 +502,6 @@ function showProduct() {
 
 
             </div>
-
 
 
             <!-- ==================================
@@ -448,9 +547,6 @@ function showProduct() {
 
 
                 ${offerHTML}
-
-
-                
 
 
                 <!-- QUANTITY -->
@@ -587,7 +683,7 @@ function showProduct() {
 
 
         <!-- ==================================
-             FULL DESCRIPTION
+             DESCRIPTION
              ================================== -->
 
         ${
@@ -654,6 +750,7 @@ function setupGallery(
             "product-image"
         );
 
+
     const thumbnails =
         document.querySelectorAll(
             ".product-thumbnail"
@@ -690,6 +787,24 @@ function setupGallery(
                     ) {
 
                         return;
+
+                    }
+
+
+                    mainImage.style.display =
+                        "";
+
+
+                    const imageError =
+                        document.getElementById(
+                            "image-error"
+                        );
+
+
+                    if (imageError) {
+
+                        imageError.style.display =
+                            "none";
 
                     }
 
@@ -743,7 +858,9 @@ function setupImageError() {
 
 
     if (!image) {
+
         return;
+
     }
 
 
@@ -777,7 +894,9 @@ function renderSpecifications(
 ) {
 
     if (!specifications) {
+
         return "";
+
     }
 
 
@@ -788,7 +907,9 @@ function renderSpecifications(
 
 
     if (!text) {
+
         return "";
+
     }
 
 
@@ -804,13 +925,13 @@ function renderSpecifications(
 
                 }
             )
-            .filter(
-                Boolean
-            );
+            .filter(Boolean);
 
 
     if (!lines.length) {
+
         return "";
+
     }
 
 
@@ -897,6 +1018,7 @@ function renderSpecifications(
                         }
                     )
                     .join("")
+
             }
 
         </div>
@@ -1093,7 +1215,9 @@ function setupProductEvents(
 
 
                 if (!quantity) {
+
                     return;
+
                 }
 
 
@@ -1127,7 +1251,9 @@ function setupProductEvents(
 
 
                 if (!quantity) {
+
                     return;
+
                 }
 
 
@@ -1282,6 +1408,7 @@ function getQuantity(
     ) {
 
         quantity = stock;
+
 
         input.value =
             stock;
@@ -1489,7 +1616,9 @@ function showMessage(
 
 
     if (!element) {
+
         return;
+
     }
 
 
@@ -1618,14 +1747,3 @@ function escapeHTML(
     );
 
 }
-console.time("PRODUCT API");
-
-fetch(API_URL)
-    .then(response => response.json())
-    .then(data => {
-
-        console.timeEnd("PRODUCT API");
-
-        // xử lý tiếp...
-
-    });
