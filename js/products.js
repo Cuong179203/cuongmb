@@ -1,8 +1,18 @@
 
 "use strict";
 
+
+// ========================================
+// API CONFIG
+// ========================================
+
 const API_URL =
     "https://script.google.com/macros/s/AKfycbxxQRkcRL5BrTEdH28baGNOIyYa-I2vKiYkbQ_ChiMICpqRLSayBpaCM_N44Kn8jtV3/exec";
+
+
+// ========================================
+// GLOBAL PRODUCTS
+// ========================================
 
 let products = [];
 
@@ -15,49 +25,169 @@ async function loadProducts() {
 
     try {
 
-        console.log("Đang tải sản phẩm từ API...");
-
-        const response = await fetch(
-            API_URL +
-            "?action=getProducts&t=" +
-            Date.now()
+        console.log(
+            "========================================"
         );
+
+        console.log(
+            "CƯỜNG MOBILE - PRODUCTS.JS"
+        );
+
+        console.log(
+            "Đang tải sản phẩm từ API..."
+        );
+
+        const response =
+            await fetch(
+                API_URL +
+                "?action=getProducts&t=" +
+                Date.now()
+            );
+
+
+        // ====================================
+        // HTTP CHECK
+        // ====================================
 
         if (!response.ok) {
 
             throw new Error(
-                "HTTP " + response.status
+                "HTTP " +
+                response.status
             );
 
         }
 
-        const data = await response.json();
+
+        // ====================================
+        // READ RESPONSE
+        // ====================================
+
+        const text =
+            await response.text();
+
+
+        console.log(
+            "PRODUCT API RAW:",
+            text
+        );
+
+
+        // ====================================
+        // PARSE JSON
+        // ====================================
+
+        let data;
+
+        try {
+
+            data =
+                JSON.parse(
+                    text
+                );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "API không trả về JSON:",
+                text
+            );
+
+            throw new Error(
+                "API không trả về JSON hợp lệ."
+            );
+
+        }
+
 
         console.log(
             "PRODUCT API:",
             data
         );
 
-        if (!data.success) {
+
+        // ====================================
+        // API SUCCESS CHECK
+        // ====================================
+
+        if (
+            !data ||
+            data.success !== true
+        ) {
 
             throw new Error(
-                data.error ||
-                "API trả về lỗi."
+                data &&
+                data.error
+                    ? data.error
+                    : "API trả về lỗi."
             );
 
         }
 
+
+        // ====================================
+        // NORMALIZE PRODUCTS
+        // ====================================
+
         products =
-            Array.isArray(data.products)
+            Array.isArray(
+                data.products
+            )
                 ? data.products.map(
                     normalizeProduct
                 )
                 : [];
 
+
         console.log(
             "Products loaded:",
             products
         );
+
+
+        console.log(
+            "Tổng sản phẩm:",
+            products.length
+        );
+
+
+        // ====================================
+        // DEBUG IMAGE DATA
+        // ====================================
+
+        products.forEach(
+            function (product) {
+
+                console.log(
+                    "PRODUCT IMAGE DATA:",
+                    {
+                        id:
+                            product.id,
+
+                        name:
+                            product.name,
+
+                        image:
+                            product.image,
+
+                        images:
+                            product.images,
+
+                        imageCount:
+                            product.images.length
+                    }
+                );
+
+            }
+        );
+
+
+        console.log(
+            "========================================"
+        );
+
 
         return products;
 
@@ -70,7 +200,9 @@ async function loadProducts() {
             error
         );
 
+
         products = [];
+
 
         throw error;
 
@@ -81,102 +213,261 @@ async function loadProducts() {
 
 // ========================================
 // NORMALIZE PRODUCT
-//
-// CHỈ NHẬN:
-//
-// 1. Hình ảnh       -> ảnh chính
-// 2. Hình ảnh phụ   -> ảnh phụ
-//
-// KHÔNG NHẬN:
-//
-// Hình ảnh 2
-// Hình ảnh 3
-// Hình ảnh 4
-// Hình ảnh 5
-// image2
-// image3
-// image4
-// image5
 // ========================================
 
-function normalizeProduct(product) {
+function normalizeProduct(
+    product
+) {
 
-    product = product || {};
-
-
-    // ====================================
-    // ẢNH CHÍNH
-    // ====================================
-
-    const mainImage =
-        String(
-            product["Hình ảnh"] ??
-            product.image ??
-            ""
-        ).trim();
+    product =
+        product || {};
 
 
     // ====================================
-    // ẢNH PHỤ
-    //
-    // Chỉ lấy từ:
-    //
-    // Hình ảnh phụ
-    // Ảnh phụ
-    // images
-    // subImages
-    // sub_images
-    //
-    // KHÔNG lấy Hình ảnh 2/3/4/5
-    // ====================================
-
-    const subImages =
-        normalizeSubImages(
-            product["Hình ảnh phụ"] ??
-            product["Ảnh phụ"] ??
-            product.images ??
-            product.subImages ??
-            product.sub_images ??
-            ""
-        );
-
-
-    // ====================================
-    // TẠO GALLERY
-    //
-    // ẢNH CHÍNH luôn đứng đầu.
-    //
-    // Ảnh phụ đứng sau.
-    //
-    // Loại ảnh trùng.
+    // IMAGE LIST
     // ====================================
 
     const imageList = [];
 
-    if (mainImage) {
 
-        imageList.push(
-            mainImage
+    // ====================================
+    // ADD IMAGE HELPER
+    // ====================================
+
+    function addImage(
+        image
+    ) {
+
+        if (
+            image === null ||
+            image === undefined
+        ) {
+
+            return;
+
+        }
+
+
+        // ==================================
+        // ARRAY
+        // ==================================
+
+        if (
+            Array.isArray(image)
+        ) {
+
+            image.forEach(
+                function (item) {
+
+                    addImage(
+                        item
+                    );
+
+                }
+            );
+
+            return;
+
+        }
+
+
+        const text =
+            String(
+                image
+            ).trim();
+
+
+        if (!text) {
+
+            return;
+
+        }
+
+
+        // ==================================
+        // JSON ARRAY
+        // ==================================
+
+        try {
+
+            const parsed =
+                JSON.parse(
+                    text
+                );
+
+
+            if (
+                Array.isArray(
+                    parsed
+                )
+            ) {
+
+                parsed.forEach(
+                    function (item) {
+
+                        addImage(
+                            item
+                        );
+
+                    }
+                );
+
+                return;
+
+            }
+
+        }
+
+        catch (error) {
+
+            // Không phải JSON
+            // tiếp tục xử lý text
+        }
+
+
+        // ==================================
+        // MULTIPLE URL
+        //
+        // Hình ảnh phụ trong Google Sheet
+        // đang được admin-products.js lưu:
+        //
+        // URL 1
+        // URL 2
+        // URL 3
+        //
+        // ==================================
+
+        const lines =
+            text.split(
+                /\r?\n/
+            );
+
+
+        lines.forEach(
+            function (line) {
+
+                const value =
+                    String(
+                        line || ""
+                    ).trim();
+
+
+                if (
+                    !value
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    imageList.indexOf(
+                        value
+                    ) === -1
+                ) {
+
+                    imageList.push(
+                        value
+                    );
+
+                }
+
+            }
         );
 
     }
 
 
-    subImages.forEach(
-        function (image) {
+    // ====================================
+    // MAIN IMAGE
+    // ====================================
 
-            if (
-                image &&
-                imageList.indexOf(image) === -1
-            ) {
+    addImage(
+        product["Hình ảnh"]
+    );
 
-                imageList.push(
-                    image
-                );
 
-            }
+    addImage(
+        product.image
+    );
 
-        }
+
+    // ====================================
+    // MAIN IMAGE - OLD FORMAT
+    // ====================================
+
+    addImage(
+        product["Hình ảnh 2"]
+    );
+
+    addImage(
+        product.image2
+    );
+
+
+    addImage(
+        product["Hình ảnh 3"]
+    );
+
+    addImage(
+        product.image3
+    );
+
+
+    addImage(
+        product["Hình ảnh 4"]
+    );
+
+    addImage(
+        product.image4
+    );
+
+
+    addImage(
+        product["Hình ảnh 5"]
+    );
+
+    addImage(
+        product.image5
+    );
+
+
+    // ====================================
+    // ⭐ IMAGE PHỤ
+    //
+    // CODE.GS:
+    //
+    // product["Hình ảnh phụ"]
+    //
+    // ADMIN:
+    //
+    // product.images
+    //
+    // ====================================
+
+    addImage(
+        product["Hình ảnh phụ"]
+    );
+
+
+    addImage(
+        product["Ảnh phụ"]
+    );
+
+
+    addImage(
+        product.images
+    );
+
+
+    addImage(
+        product.subImages
+    );
+
+
+    addImage(
+        product.sub_images
     );
 
 
@@ -196,16 +487,19 @@ function normalizeProduct(product) {
         Number(
             product["Giá gốc"] ??
             product.originalPrice ??
+            product.original_price ??
             product.oldPrice ??
             0
         );
 
 
     // ====================================
-    // GIẢM GIÁ
+    // PHẦN TRĂM GIẢM
     // ====================================
 
-    let discountPercent = 0;
+    let discountPercent =
+        0;
+
 
     if (
         originalPrice > 0 &&
@@ -217,15 +511,17 @@ function normalizeProduct(product) {
             Math.round(
                 (
                     1 -
-                    price / originalPrice
-                ) * 100
+                    price /
+                    originalPrice
+                ) *
+                100
             );
 
     }
 
 
     // ====================================
-    // THÔNG SỐ
+    // THÔNG SỐ KỸ THUẬT
     // ====================================
 
     const specifications =
@@ -237,10 +533,46 @@ function normalizeProduct(product) {
 
 
     // ====================================
-    // RETURN
+    // ƯU ĐÃI
+    // ====================================
+
+    const offer =
+        product["Ưu đãi"] ??
+        product.offer ??
+        product.promotion ??
+        product.promotions ??
+        "";
+
+
+    // ====================================
+    // MÔ TẢ
+    // ====================================
+
+    const description =
+        product["Mô tả"] ??
+        product.description ??
+        "";
+
+
+    // ====================================
+    // VISIBLE
+    // ====================================
+
+    const visible =
+        product["Hiển thị"] ??
+        product.visible ??
+        true;
+
+
+    // ====================================
+    // RETURN NORMALIZED PRODUCT
     // ====================================
 
     return {
+
+        // ==================================
+        // BASIC
+        // ==================================
 
         id:
             String(
@@ -258,14 +590,30 @@ function normalizeProduct(product) {
             ).trim(),
 
 
+        category:
+            String(
+                product["Danh mục"] ??
+                product.category ??
+                ""
+            ).trim(),
+
+
+        // ==================================
+        // PRICE
+        // ==================================
+
         price:
-            Number.isFinite(price)
+            Number.isFinite(
+                price
+            )
                 ? price
                 : 0,
 
 
         originalPrice:
-            Number.isFinite(originalPrice)
+            Number.isFinite(
+                originalPrice
+            )
                 ? originalPrice
                 : 0,
 
@@ -274,13 +622,9 @@ function normalizeProduct(product) {
             discountPercent,
 
 
-        category:
-            String(
-                product["Danh mục"] ??
-                product.category ??
-                ""
-            ).trim(),
-
+        // ==================================
+        // STOCK
+        // ==================================
 
         stock:
             Number(
@@ -290,37 +634,64 @@ function normalizeProduct(product) {
             ) || 0,
 
 
-        // =================================
-        // ẢNH CHÍNH
-        // =================================
+        // ==================================
+        // ⭐ MAIN IMAGE
+        // ==================================
 
         image:
-            mainImage,
+            imageList.length > 0
+                ? imageList[0]
+                : "",
 
 
-        // =================================
-        // GALLERY
+        // ==================================
+        // ⭐ ALL IMAGES
         //
-        // [ảnh chính, ảnh phụ 1, ảnh phụ 2...]
-        // =================================
+        // images[0] = ảnh chính
+        // images[1] = ảnh phụ 1
+        // images[2] = ảnh phụ 2
+        // ...
+        // ==================================
 
         images:
             imageList,
 
 
-        // =================================
-        // KHÔNG CÒN image2-image5
-        // =================================
+        // ==================================
+        // OLD IMAGE FIELDS
+        //
+        // Giữ lại để code cũ không lỗi
+        // ==================================
 
+        image2:
+            imageList[1] || "",
+
+
+        image3:
+            imageList[2] || "",
+
+
+        image4:
+            imageList[3] || "",
+
+
+        image5:
+            imageList[4] || "",
+
+
+        // ==================================
+        // OFFER
+        // ==================================
 
         offer:
             String(
-                product["Ưu đãi"] ??
-                product.offer ??
-                product.promotion ??
-                ""
+                offer
             ).trim(),
 
+
+        // ==================================
+        // SPECIFICATIONS
+        // ==================================
 
         specifications:
             String(
@@ -328,18 +699,22 @@ function normalizeProduct(product) {
             ).trim(),
 
 
+        // ==================================
+        // DESCRIPTION
+        // ==================================
+
         description:
             String(
-                product["Mô tả"] ??
-                product.description ??
-                ""
+                description
             ).trim(),
 
 
+        // ==================================
+        // VISIBLE
+        // ==================================
+
         visible:
-            product["Hiển thị"] ??
-            product.visible ??
-            true
+            visible
 
     };
 
@@ -347,109 +722,140 @@ function normalizeProduct(product) {
 
 
 // ========================================
-// NORMALIZE ẢNH PHỤ
+// FIND PRODUCT BY ID
 // ========================================
 
-function normalizeSubImages(value) {
+function getProductById(
+    id
+) {
 
-    // ====================================
-    // Nếu API trả Array
-    // ====================================
-
-    if (Array.isArray(value)) {
-
-        return value
-            .map(
-                function (image) {
-
-                    return String(
-                        image ?? ""
-                    ).trim();
-
-                }
-            )
-            .filter(Boolean);
-
-    }
-
-
-    const text =
+    const targetId =
         String(
-            value ?? ""
+            id ?? ""
         ).trim();
 
 
-    if (!text) {
+    if (!targetId) {
 
-        return [];
+        return null;
 
     }
 
 
-    // ====================================
-    // Nếu là JSON Array
-    //
-    // Ví dụ:
-    //
-    // ["url1","url2","url3"]
-    // ====================================
+    return products.find(
+        function (product) {
 
-    try {
-
-        const parsed =
-            JSON.parse(
-                text
-            );
-
-
-        if (
-            Array.isArray(parsed)
-        ) {
-
-            return parsed
-                .map(
-                    function (image) {
-
-                        return String(
-                            image ?? ""
-                        ).trim();
-
-                    }
-                )
-                .filter(Boolean);
+            return String(
+                product.id
+            ).trim() ===
+                targetId;
 
         }
-
-    }
-
-    catch (error) {
-
-        // Không phải JSON
-        // tiếp tục xử lý text
-
-    }
-
-
-    // ====================================
-    // Nếu nhập mỗi URL một dòng
-    // ====================================
-
-    return text
-        .split(/\r?\n/)
-        .map(
-            function (image) {
-
-                return image.trim();
-
-            }
-        )
-        .filter(Boolean);
+    ) || null;
 
 }
 
 
 // ========================================
-// CHỜ PRODUCTS LOAD
+// FIND PRODUCT BY NAME
+// ========================================
+
+function getProductByName(
+    name
+) {
+
+    const targetName =
+        String(
+            name ?? ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    if (!targetName) {
+
+        return null;
+
+    }
+
+
+    return products.find(
+        function (product) {
+
+            return String(
+                product.name
+            )
+                .trim()
+                .toLowerCase() ===
+                targetName;
+
+        }
+    ) || null;
+
+}
+
+
+// ========================================
+// GET PRODUCT
+//
+// Hỗ trợ:
+// ?id=SP001
+//
+// hoặc:
+// ?product=SP001
+// ========================================
+
+function findProductFromUrl() {
+
+    try {
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const id =
+            params.get(
+                "id"
+            ) ||
+            params.get(
+                "product"
+            ) ||
+            params.get(
+                "productId"
+            );
+
+
+        if (!id) {
+
+            return null;
+
+        }
+
+
+        return getProductById(
+            id
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "URL PRODUCT ERROR:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+// ========================================
+// WAIT PRODUCTS LOAD
 // ========================================
 
 window.productsReady =
@@ -457,12 +863,73 @@ window.productsReady =
 
 
 // ========================================
-// EXPORT
+// EXPORT PRODUCTS
 // ========================================
 
 window.getProducts =
     function () {
 
         return products;
+
+    };
+
+
+// ========================================
+// EXPORT PRODUCT BY ID
+// ========================================
+
+window.getProductById =
+    getProductById;
+
+
+// ========================================
+// EXPORT PRODUCT BY NAME
+// ========================================
+
+window.getProductByName =
+    getProductByName;
+
+
+// ========================================
+// EXPORT FIND PRODUCT FROM URL
+// ========================================
+
+window.findProductFromUrl =
+    findProductFromUrl;
+
+
+// ========================================
+// DEBUG EXPORT
+// ========================================
+
+window.CuongMobileProducts =
+    {
+
+        getAll:
+            function () {
+
+                return products;
+
+            },
+
+
+        getById:
+            function (id) {
+
+                return getProductById(
+                    id
+                );
+
+            },
+
+
+        getByName:
+            function (name) {
+
+                return getProductByName(
+                    name
+                );
+
+            }
 
     };
