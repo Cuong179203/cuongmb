@@ -1921,7 +1921,7 @@ async function saveProduct(
             ? getLines(
                 productImagesElement.value
             ).join("\n")
-            : "",
+            : "";
 
     // ========================================================
     // PRODUCT
