@@ -2353,11 +2353,9 @@ async function saveProduct(
         );
 
         console.log(
-            "SAVE PAYLOAD:"
-        );
-
-        console.log(
-            payload
+            "SAVE PRODUCT:",
+            action,
+            product.id
         );
 
         console.log(
