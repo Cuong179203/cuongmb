@@ -269,7 +269,7 @@ async function apiPostAdmin(
 
 document.addEventListener(
     "DOMContentLoaded",
-    function () {
+    async function () {
 
         console.log(
             "admin-products.js loaded"
@@ -283,6 +283,43 @@ document.addEventListener(
             console.warn(
                 "Không tìm thấy CM_ADMIN_TOKEN."
             );
+
+            window.location.href =
+                "admin.html";
+
+            return;
+
+        }
+
+        try {
+
+            const authResult =
+                await apiPostAdmin(
+                    "checkAdmin"
+                );
+
+            if (
+                !authResult ||
+                authResult.success !== true
+            ) {
+
+                throw new Error(
+                    authResult?.error ||
+                    "Admin Token không hợp lệ."
+                );
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "ADMIN AUTH ERROR:",
+                error
+            );
+
+            clearAdminToken();
 
             window.location.href =
                 "admin.html";
