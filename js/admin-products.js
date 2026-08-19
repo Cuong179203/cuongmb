@@ -371,9 +371,23 @@ async function loadProducts() {
 
     try {
 
+        const apiUrl =
+            String(
+                window.CUONG_MOBILE_API_URL ||
+                ""
+            ).trim();
+
+        if (!apiUrl) {
+
+            throw new Error(
+                "Thiếu cấu hình API. Vui lòng tải lại trang."
+            );
+
+        }
+
         const response =
             await fetch(
-                window.CUONG_MOBILE_API_URL +
+                apiUrl +
                 "?action=getProducts&t=" +
                 Date.now()
             );
