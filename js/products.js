@@ -119,7 +119,7 @@ async function loadProducts() {
 
             throw new Error(
                 data &&
-                data.error
+                    data.error
                     ? data.error
                     : "API trả về lỗi."
             );
@@ -460,6 +460,10 @@ function normalizeProduct(
         product.images
     );
 
+    addImage(
+        product.gallery
+    );
+
 
     addImage(
         product.subImages
@@ -657,6 +661,10 @@ function normalizeProduct(
             imageList,
 
 
+        gallery:
+            imageList,
+
+
         // ==================================
         // OLD IMAGE FIELDS
         //
@@ -686,6 +694,14 @@ function normalizeProduct(
         offer:
             String(
                 offer
+            ).trim(),
+
+
+        discount:
+            String(
+                product.discount ??
+                product.promotion ??
+                ""
             ).trim(),
 
 
@@ -903,33 +919,33 @@ window.findProductFromUrl =
 // ========================================
 
 window.CuongMobileProducts =
-    {
+{
 
-        getAll:
-            function () {
+    getAll:
+        function () {
 
-                return products;
+            return products;
 
-            },
-
-
-        getById:
-            function (id) {
-
-                return getProductById(
-                    id
-                );
-
-            },
+        },
 
 
-        getByName:
-            function (name) {
+    getById:
+        function (id) {
 
-                return getProductByName(
-                    name
-                );
+            return getProductById(
+                id
+            );
 
-            }
+        },
 
-    };
+
+    getByName:
+        function (name) {
+
+            return getProductByName(
+                name
+            );
+
+        }
+
+};

@@ -2,7 +2,7 @@
 // CƯỜNG MOBILE
 // ADMIN.JS
 // GOOGLE APPS SCRIPT API
-// VERSION: SECURITY STEP 2 - FINAL FIX
+// VERSION: SECURITY STEP 3 - FAST+
 // ============================================================
 
 "use strict";
@@ -134,30 +134,9 @@ async function loginAdmin() {
             "Đang kiểm tra Admin Token..."
         );
 
-        /*
-         * Code.gs hiện tại KHÔNG có action checkAdmin.
-         *
-         * Vì vậy không gọi:
-         * action: "checkAdmin"
-         *
-         * Ta xác thực bằng getOrders.
-         *
-         * Nếu token đúng:
-         * {
-         *   success: true,
-         *   orders: [...]
-         * }
-         *
-         * Nếu token sai:
-         * {
-         *   success: false,
-         *   error: "Không có quyền truy cập admin."
-         * }
-         */
-
         const data =
             await apiPostWithToken(
-                "getOrders",
+                "checkAdmin",
                 {},
                 token
             );
@@ -174,7 +153,7 @@ async function loginAdmin() {
 
             throw new Error(
                 data &&
-                data.error
+                    data.error
                     ? data.error
                     : "Admin Token không hợp lệ."
             );
@@ -183,19 +162,7 @@ async function loginAdmin() {
 
         saveToken(token);
 
-        orders =
-            Array.isArray(
-                data.orders
-            )
-                ? data.orders
-                : [];
-
-        filteredOrders =
-            [...orders];
-
         showApp();
-
-        renderAll();
 
         /*
          * Sau khi xác thực thành công,
@@ -696,7 +663,7 @@ async function loadProducts() {
 
             throw new Error(
                 data &&
-                data.error
+                    data.error
                     ? data.error
                     : "Không thể tải sản phẩm."
             );
@@ -797,7 +764,7 @@ async function loadOrders() {
 
             throw new Error(
                 data &&
-                data.error
+                    data.error
                     ? data.error
                     : "Không thể tải đơn hàng."
             );
@@ -1524,54 +1491,52 @@ ${escapeHtml(p.ID)}
 
 <td>
 
-${
-    p["Hình ảnh"]
-        ? `<img
+${p["Hình ảnh"]
+                            ? `<img
             src="${escapeHtml(
-                p["Hình ảnh"]
-            )}"
+                                p["Hình ảnh"]
+                            )}"
             width="50"
             height="50"
             style="object-fit:cover"
             onerror="this.style.display='none'"
         >`
-        : ""
-}
+                            : ""
+                        }
 
 </td>
 
 <td>
 ${escapeHtml(
-    p["Tên sản phẩm"]
-)}
+                            p["Tên sản phẩm"]
+                        )}
 </td>
 
 <td>
 ${escapeHtml(
-    p["Danh mục"]
-)}
+                            p["Danh mục"]
+                        )}
 </td>
 
 <td>
 ${Number(
-    p["Giá"] || 0
-).toLocaleString("vi-VN")} ₫
+                            p["Giá"] || 0
+                        ).toLocaleString("vi-VN")} ₫
 </td>
 
 <td>
 ${Number(
-    p["Tồn kho"] || 0
-)}
+                            p["Tồn kho"] || 0
+                        )}
 </td>
 
 <td>
-${
-    toBooleanClient(
-        p["Hiển thị"]
-    )
-        ? "Hiện"
-        : "Ẩn"
-}
+${toBooleanClient(
+                            p["Hiển thị"]
+                        )
+                            ? "Hiện"
+                            : "Ẩn"
+                        }
 </td>
 
 <td>
@@ -1579,8 +1544,8 @@ ${
 <button
     type="button"
     onclick="editProduct('${escapeJs(
-        p.ID
-    )}')"
+                            p.ID
+                        )}')"
 >
 Sửa
 </button>
@@ -1588,8 +1553,8 @@ Sửa
 <button
     type="button"
     onclick="deleteProduct('${escapeJs(
-        p.ID
-    )}')"
+                            p.ID
+                        )}')"
 >
 Xóa
 </button>
@@ -1705,16 +1670,16 @@ ${escapeHtml(orderId)}
 
 <td>
 ${escapeHtml(
-    o["Ngày"]
-)}
+                        o["Ngày"]
+                    )}
 </td>
 
 <td>
 <div>
 <strong>
 ${escapeHtml(
-    o["Họ tên"]
-)}
+                        o["Họ tên"]
+                    )}
 </strong>
 </div>
 
@@ -1724,35 +1689,35 @@ ${escapeHtml(
     font-size:10px;
 ">
 ${escapeHtml(
-    o["Số điện thoại"]
-)}
+                        o["Số điện thoại"]
+                    )}
 </div>
 </td>
 
 <td>
 ${escapeHtml(
-    o["Địa chỉ"]
-)}
+                        o["Địa chỉ"]
+                    )}
 </td>
 
 <td>
 ${escapeHtml(
-    o["Sản phẩm"]
-)}
+                        o["Sản phẩm"]
+                    )}
 </td>
 
 <td>
 <strong>
 ${total.toLocaleString(
-    "vi-VN"
-)} ₫
+                        "vi-VN"
+                    )} ₫
 </strong>
 </td>
 
 <td>
 ${escapeHtml(
-    o["Thanh toán"] || "COD"
-)}
+                        o["Thanh toán"] || "COD"
+                    )}
 </td>
 
 <td>
@@ -1765,28 +1730,26 @@ ${escapeHtml(
     )"
 >
 
-${
-    statuses
-        .map(
-            function (s) {
+${statuses
+                            .map(
+                                function (s) {
 
-                return `
+                                    return `
 <option
     value="${escapeHtml(s)}"
-    ${
-        status === s
-            ? "selected"
-            : ""
-    }
+    ${status === s
+                                            ? "selected"
+                                            : ""
+                                        }
 >
 ${escapeHtml(s)}
 </option>
 `;
 
-            }
-        )
-        .join("")
-}
+                                }
+                            )
+                            .join("")
+                        }
 
 </select>
 
@@ -1798,8 +1761,8 @@ ${escapeHtml(s)}
     type="button"
     class="detail-btn"
     onclick="showOrderDetail('${escapeJs(
-        orderId
-    )}')"
+                            orderId
+                        )}')"
 >
 Chi tiết
 </button>
@@ -1895,8 +1858,8 @@ function showOrderDetail(
 
         <div class="detail-value">
             ${escapeHtml(
-                order["Order ID"]
-            )}
+        order["Order ID"]
+    )}
         </div>
 
     </div>
@@ -1909,8 +1872,8 @@ function showOrderDetail(
 
         <div class="detail-value">
             ${escapeHtml(
-                order["Ngày"]
-            )}
+        order["Ngày"]
+    )}
         </div>
 
     </div>
@@ -1923,8 +1886,8 @@ function showOrderDetail(
 
         <div class="detail-value">
             ${escapeHtml(
-                order["Trạng thái"]
-            )}
+        order["Trạng thái"]
+    )}
         </div>
 
     </div>
@@ -1937,8 +1900,8 @@ function showOrderDetail(
 
         <div class="detail-value">
             ${escapeHtml(
-                order["Thanh toán"] || "COD"
-            )}
+        order["Thanh toán"] || "COD"
+    )}
         </div>
 
     </div>
@@ -1957,8 +1920,8 @@ function showOrderDetail(
             <strong>Họ tên:</strong>
             <span>
                 ${escapeHtml(
-                    order["Họ tên"]
-                )}
+        order["Họ tên"]
+    )}
             </span>
         </div>
 
@@ -1966,8 +1929,8 @@ function showOrderDetail(
             <strong>Số điện thoại:</strong>
             <span>
                 ${escapeHtml(
-                    order["Số điện thoại"]
-                )}
+        order["Số điện thoại"]
+    )}
             </span>
         </div>
 
@@ -1975,8 +1938,8 @@ function showOrderDetail(
             <strong>Địa chỉ:</strong>
             <span>
                 ${escapeHtml(
-                    order["Địa chỉ"]
-                )}
+        order["Địa chỉ"]
+    )}
             </span>
         </div>
 
@@ -1984,8 +1947,8 @@ function showOrderDetail(
             <strong>Ghi chú:</strong>
             <span>
                 ${escapeHtml(
-                    order["Ghi chú"] || ""
-                )}
+        order["Ghi chú"] || ""
+    )}
             </span>
         </div>
 
@@ -2002,8 +1965,8 @@ function showOrderDetail(
     <div class="detail-products">
 
         ${formatOrderDetailProducts(
-            order
-        )}
+        order
+    )}
 
     </div>
 
@@ -2015,8 +1978,8 @@ function showOrderDetail(
 
         <strong>
             ${total.toLocaleString(
-                "vi-VN"
-            )} ₫
+        "vi-VN"
+    )} ₫
         </strong>
 
     </div>
@@ -2046,7 +2009,7 @@ function formatOrderDetailProducts(
 
     const raw =
         order[
-            "Chi tiết sản phẩm"
+        "Chi tiết sản phẩm"
         ];
 
     if (raw) {
@@ -2105,8 +2068,8 @@ ${escapeHtml(name)}
 
 ${quantity} ×
 ${price.toLocaleString(
-    "vi-VN"
-)} ₫
+                                "vi-VN"
+                            )} ₫
 
 </div>
 
@@ -2140,8 +2103,8 @@ ${price.toLocaleString(
     font-size:12px;
 ">
 ${escapeHtml(
-    order["Sản phẩm"] || "Không có dữ liệu"
-)}
+        order["Sản phẩm"] || "Không có dữ liệu"
+    )}
 </div>
 `;
 
