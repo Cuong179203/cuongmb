@@ -1645,10 +1645,8 @@ function editProduct(
     // ========================================================
 
     setValue(
-        "productImages",
-        Array.isArray(product.images)
-            ? product.images.join("\n")
-            : ""
+        "productImage",
+        product.image
     );
 
     // ========================================================
@@ -1665,9 +1663,9 @@ function editProduct(
 
     setValue(
         "productImages",
-        product.images.join(
-            "\n"
-        )
+        Array.isArray(product.images)
+            ? product.images.join("\n")
+            : ""
     );
 
     // ========================================================
