@@ -1955,7 +1955,15 @@ async function saveProduct(
         productImagesElement
             ? getLines(
                 productImagesElement.value
-            ).join("\n")
+            )
+                .filter(
+                    function (url, index, urls) {
+
+                        return urls.indexOf(url) === index;
+
+                    }
+                )
+                .join("\n")
             : "";
 
     // ========================================================
@@ -2231,6 +2239,36 @@ async function saveProduct(
 
         alert(
             "Tồn kho không hợp lệ."
+        );
+
+        return;
+
+    }
+
+    const imageUrls = [
+
+        product.image,
+
+        ...getLines(
+            product.gallery
+        )
+
+    ].filter(Boolean);
+
+    const invalidImageUrl =
+        imageUrls.find(
+            function (url) {
+
+                return !isValidImageUrl(url);
+
+            }
+        );
+
+    if (invalidImageUrl) {
+
+        alert(
+            "URL hình ảnh không hợp lệ:\n" +
+            invalidImageUrl
         );
 
         return;
@@ -2818,6 +2856,68 @@ function getLines(
             }
         )
         .filter(Boolean);
+
+}
+
+
+// ============================================================
+// IMAGE URL VALIDATION
+// ============================================================
+
+function isValidImageUrl(
+    value
+) {
+
+    const text =
+        String(
+            value || ""
+        ).trim();
+
+    if (!text) {
+
+        return false;
+
+    }
+
+    if (
+        text.startsWith(
+            "data:image/"
+        )
+    ) {
+
+        return true;
+
+    }
+
+    if (
+        /^(?![\\/]|\/\/)(?:[\w.-]+\/)+[\w.-]+(?:\?[^#]*)?(?:#.*)?$/i.test(
+            text
+        )
+    ) {
+
+        return true;
+
+    }
+
+    try {
+
+        const url =
+            new URL(
+                text
+            );
+
+        return (
+            url.protocol === "http:" ||
+            url.protocol === "https:"
+        );
+
+    }
+
+    catch (error) {
+
+        return false;
+
+    }
 
 }
 
