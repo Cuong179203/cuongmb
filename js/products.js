@@ -3,13 +3,6 @@
 
 
 // ========================================
-// API CONFIG
-// ========================================
-
-const API_URL =
-    "https://script.google.com/macros/s/AKfycbxxQRkcRL5BrTEdH28baGNOIyYa-I2vKiYkbQ_ChiMICpqRLSayBpaCM_N44Kn8jtV3/exec";
-
-
 // ========================================
 // GLOBAL PRODUCTS
 // ========================================
@@ -39,7 +32,7 @@ async function loadProducts() {
 
         const response =
             await fetch(
-                API_URL +
+                window.CUONG_MOBILE_API_URL +
                 "?action=getProducts&t=" +
                 Date.now()
             );

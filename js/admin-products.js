@@ -27,13 +27,6 @@
 // CONFIG
 // ============================================================
 
-const API_URL =
-    "https://script.google.com/macros/s/AKfycbxxQRkcRL5BrTEdH28baGNOIyYa-I2vKiYkbQ_ChiMICpqRLSayBpaCM_N44Kn8jtV3/exec";
-
-const TOKEN_KEY =
-    "CM_ADMIN_TOKEN";
-
-
 // ============================================================
 // STATE
 // ============================================================
@@ -53,7 +46,7 @@ function getAdminToken() {
 
         return (
             sessionStorage.getItem(
-                TOKEN_KEY
+                window.CUONG_MOBILE_ADMIN_TOKEN_KEY
             ) || ""
         ).trim();
 
@@ -82,7 +75,7 @@ function clearAdminToken() {
     try {
 
         sessionStorage.removeItem(
-            TOKEN_KEY
+            window.CUONG_MOBILE_ADMIN_TOKEN_KEY
         );
 
     }
@@ -182,24 +175,12 @@ async function apiPostAdmin(
     );
 
     console.log(
-        "ADMIN TOKEN:",
-        token
-            ? "TOKEN RECEIVED"
-            : "NO TOKEN"
-    );
-
-    console.log(
-        "POST PAYLOAD:",
-        payload
-    );
-
-    console.log(
         "===================================="
     );
 
     const response =
         await fetch(
-            API_URL,
+            window.CUONG_MOBILE_API_URL,
             {
 
                 method:
@@ -392,7 +373,7 @@ async function loadProducts() {
 
         const response =
             await fetch(
-                API_URL +
+                window.CUONG_MOBILE_API_URL +
                 "?action=getProducts&t=" +
                 Date.now()
             );
@@ -1544,7 +1525,7 @@ function editProduct(
                 return String(
                     item.id
                 ) ===
-                String(id);
+                    String(id);
 
             }
         );
@@ -1613,10 +1594,10 @@ function editProduct(
     // ========================================================
 
     setValue(
-    "productImages",
-    Array.isArray(product.images)
-        ? product.images.join("\n")
-        : ""
+        "productImages",
+        Array.isArray(product.images)
+            ? product.images.join("\n")
+            : ""
     );
 
     // ========================================================
@@ -1926,7 +1907,7 @@ async function saveProduct(
             ? getLines(
                 productImagesElement.value
             ).join("\n")
-             : "",
+            : "",
 
     // ========================================================
     // PRODUCT
@@ -2049,7 +2030,7 @@ async function saveProduct(
         visible:
             productVisibleElement
                 ? productVisibleElement.value ===
-                    "true"
+                "true"
                 : true
 
     };
@@ -2372,7 +2353,7 @@ async function saveProduct(
 
             throw new Error(
                 data &&
-                data.error
+                    data.error
                     ? data.error
                     : "Không thể lưu sản phẩm."
             );
@@ -2449,7 +2430,7 @@ async function removeProduct(
                 return String(
                     item.id
                 ) ===
-                String(id);
+                    String(id);
 
             }
         );
@@ -2495,7 +2476,7 @@ async function removeProduct(
 
             throw new Error(
                 data &&
-                data.error
+                    data.error
                     ? data.error
                     : "Không thể xóa sản phẩm."
             );
@@ -2825,7 +2806,7 @@ function formatMoney(
     return number.toLocaleString(
         "vi-VN"
     ) +
-    " ₫";
+        " ₫";
 
 }
 

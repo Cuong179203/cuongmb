@@ -11,12 +11,6 @@
 // CONFIG
 // ============================================================
 
-const API_URL =
-    "https://script.google.com/macros/s/AKfycbxxQRkcRL5BrTEdH28baGNOIyYa-I2vKiYkbQ_ChiMICpqRLSayBpaCM_N44Kn8jtV3/exec";
-
-const TOKEN_KEY =
-    "CM_ADMIN_TOKEN";
-
 // ============================================================
 // STATE
 // ============================================================
@@ -60,7 +54,7 @@ function getToken() {
 
     return (
         sessionStorage.getItem(
-            TOKEN_KEY
+            window.CUONG_MOBILE_ADMIN_TOKEN_KEY
         ) || ""
     ).trim();
 
@@ -69,7 +63,7 @@ function getToken() {
 function saveToken(token) {
 
     sessionStorage.setItem(
-        TOKEN_KEY,
+        window.CUONG_MOBILE_ADMIN_TOKEN_KEY,
         String(token || "").trim()
     );
 
@@ -78,7 +72,7 @@ function saveToken(token) {
 function clearToken() {
 
     sessionStorage.removeItem(
-        TOKEN_KEY
+        window.CUONG_MOBILE_ADMIN_TOKEN_KEY
     );
 
 }
@@ -450,7 +444,7 @@ async function apiGet(
 ) {
 
     let url =
-        API_URL +
+        window.CUONG_MOBILE_API_URL +
         "?action=" +
         encodeURIComponent(
             action
@@ -557,7 +551,7 @@ async function apiPostWithToken(
 
     const res =
         await fetch(
-            API_URL,
+            window.CUONG_MOBILE_API_URL,
             {
                 method: "POST",
 

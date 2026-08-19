@@ -5,13 +5,6 @@
 
 
 // ========================================
-// API GOOGLE APPS SCRIPT
-// ========================================
-
-const API_URL =
-    "https://script.google.com/macros/s/AKfycbxxQRkcRL5BrTEdH28baGNOIyYa-I2vKiYkbQ_ChiMICpqRLSayBpaCM_N44Kn8jtV3/exec";
-
-
 // ========================================
 // KHỞI ĐỘNG
 // ========================================
@@ -176,7 +169,7 @@ function loadCheckout() {
     itemsContainer.innerHTML =
         cart
             .map(
-                function(item) {
+                function (item) {
 
                     const price =
                         Number(
@@ -210,11 +203,11 @@ function loadCheckout() {
 
                                 <img
                                     src="${escapeHTML(
-                                        item.image || ""
-                                    )}"
+                        item.image || ""
+                    )}"
                                     alt="${escapeHTML(
-                                        item.name || ""
-                                    )}">
+                        item.name || ""
+                    )}">
 
                             </div>
 
@@ -225,8 +218,8 @@ function loadCheckout() {
                                 <h3>
 
                                     ${escapeHTML(
-                                        item.name || ""
-                                    )}
+                        item.name || ""
+                    )}
 
                                 </h3>
 
@@ -234,8 +227,8 @@ function loadCheckout() {
                                 <p>
 
                                     ${formatPrice(
-                                        price
-                                    )}
+                        price
+                    )}
 
                                     ×
 
@@ -249,8 +242,8 @@ function loadCheckout() {
                             <strong>
 
                                 ${formatPrice(
-                                    itemTotal
-                                )}
+                        itemTotal
+                    )}
 
                             </strong>
 
@@ -297,7 +290,7 @@ function setupCheckoutForm() {
 
     form.addEventListener(
         "submit",
-        async function(event) {
+        async function (event) {
 
             event.preventDefault();
 
@@ -431,7 +424,7 @@ function setupCheckoutForm() {
 
             const total =
                 cart.reduce(
-                    function(
+                    function (
                         sum,
                         item
                     ) {
@@ -663,8 +656,8 @@ function setupCheckoutForm() {
 async function sendOrder(order) {
 
     if (
-        !API_URL ||
-        API_URL.includes(
+        !window.CUONG_MOBILE_API_URL ||
+        window.CUONG_MOBILE_API_URL.includes(
             "DÁN_URL"
         )
     ) {
@@ -679,7 +672,7 @@ async function sendOrder(order) {
     const response =
         await fetch(
 
-            API_URL,
+            window.CUONG_MOBILE_API_URL,
 
             {
 
@@ -701,6 +694,16 @@ async function sendOrder(order) {
             }
 
         );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Google Apps Script trả về HTTP " +
+            response.status
+        );
+
+    }
 
 
     // ====================================
@@ -859,7 +862,7 @@ function updateCartCount() {
 
     const count =
         cart.reduce(
-            function(
+            function (
                 total,
                 item
             ) {
@@ -930,10 +933,10 @@ function formatPrice(price) {
     return Number(
         price || 0
     )
-    .toLocaleString(
-        "vi-VN"
-    )
-    + " ₫";
+        .toLocaleString(
+            "vi-VN"
+        )
+        + " ₫";
 
 }
 
@@ -948,29 +951,29 @@ function escapeHTML(value) {
         value ?? ""
     )
 
-    .replace(
-        /&/g,
-        "&amp;"
-    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-    .replace(
-        /</g,
-        "&lt;"
-    )
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-    .replace(
-        />/g,
-        "&gt;"
-    )
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-    .replace(
-        /"/g,
-        "&quot;"
-    )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-    .replace(
-        /'/g,
-        "&#039;"
-    );
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }

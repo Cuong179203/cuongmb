@@ -194,11 +194,11 @@ function renderCart() {
 
                             <img
                                 src="${escapeHTML(
-                                    item.image || ""
-                                )}"
+                    item.image || ""
+                )}"
                                 alt="${escapeHTML(
-                                    item.name
-                                )}">
+                    item.name
+                )}">
 
                         </div>
 
@@ -211,8 +211,8 @@ function renderCart() {
                             <h3>
 
                                 ${escapeHTML(
-                                    item.name
-                                )}
+                    item.name
+                )}
 
                             </h3>
 
@@ -221,8 +221,8 @@ function renderCart() {
                                 class="cart-item-price">
 
                                 ${formatPrice(
-                                    price
-                                )}
+                    price
+                )}
 
                             </p>
 
@@ -279,8 +279,8 @@ function renderCart() {
                             class="cart-item-total">
 
                             ${formatPrice(
-                                total
-                            )}
+                    total
+                )}
 
                         </div>
 
@@ -291,7 +291,7 @@ function renderCart() {
 
             }
         )
-        .join("");
+            .join("");
 
 
     updateSummary(
@@ -601,6 +601,21 @@ function changeQuantity(
 
     }
 
+    const stock =
+        Number(
+            cart[index].stock || 0
+        );
+
+    if (
+        stock > 0 &&
+        quantity > stock
+    ) {
+
+        quantity =
+            stock;
+
+    }
+
 
     cart[index].quantity =
         quantity;
@@ -710,11 +725,11 @@ function formatPrice(
     return Number(
         price || 0
     )
-    .toLocaleString(
-        "vi-VN"
-    )
-    +
-    " ₫";
+        .toLocaleString(
+            "vi-VN"
+        )
+        +
+        " ₫";
 
 }
 
@@ -731,29 +746,29 @@ function escapeHTML(
         value ?? ""
     )
 
-    .replace(
-        /&/g,
-        "&amp;"
-    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-    .replace(
-        /</g,
-        "&lt;"
-    )
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-    .replace(
-        />/g,
-        "&gt;"
-    )
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-    .replace(
-        /"/g,
-        "&quot;"
-    )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-    .replace(
-        /'/g,
-        "&#039;"
-    );
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }

@@ -136,10 +136,10 @@ function showProduct() {
                 return String(
                     item.id
                 ).trim()
-                ===
-                String(
-                    productId
-                ).trim();
+                    ===
+                    String(
+                        productId
+                    ).trim();
 
             }
         );
@@ -289,8 +289,8 @@ function showProduct() {
                     <div class="product-offer-content">
 
                         ${escapeHTML(
-                            product.offer
-                        )}
+                product.offer
+            )}
 
                     </div>
 
@@ -308,35 +308,33 @@ function showProduct() {
 
         <div class="product-price-area">
 
-            ${
-                hasOriginalPrice
-                    ? `
+            ${hasOriginalPrice
+            ? `
 
                         <div class="product-original-price">
 
                             ${formatPrice(
-                                product.originalPrice
-                            )}
+                product.originalPrice
+            )}
 
                         </div>
 
                     `
-                    : ""
-            }
+            : ""
+        }
 
 
             <div class="product-current-price">
 
                 ${formatPrice(
-                    product.price
-                )}
+            product.price
+        )}
 
             </div>
 
 
-            ${
-                discountPercent > 0
-                    ? `
+            ${discountPercent > 0
+            ? `
 
                         <span class="product-discount">
 
@@ -345,8 +343,8 @@ function showProduct() {
                         </span>
 
                     `
-                    : ""
-            }
+            : ""
+        }
 
         </div>
 
@@ -367,35 +365,33 @@ function showProduct() {
                     class="product-thumbnails"
                     id="product-thumbnails">
 
-                    ${
-                        images
-                            .map(
-                                function (
-                                    image,
-                                    index
-                                ) {
+                    ${images
+                .map(
+                    function (
+                        image,
+                        index
+                    ) {
 
-                                    return `
+                        return `
 
                                         <button
                                             type="button"
                                             class="
                                                 product-thumbnail
-                                                ${
-                                                    index === 0
-                                                        ? "active"
-                                                        : ""
-                                                }
+                                                ${index === 0
+                                ? "active"
+                                : ""
+                            }
                                             "
                                             data-index="${index}">
 
                                             <img
                                                 src="${escapeHTML(
-                                                    image
-                                                )}"
+                                image
+                            )}"
                                                 alt="${escapeHTML(
-                                                    product.name
-                                                )} - ảnh ${index + 1}"
+                                product.name
+                            )} - ảnh ${index + 1}"
                                                 loading="lazy"
                                             >
 
@@ -403,11 +399,11 @@ function showProduct() {
 
                                     `;
 
-                                }
-                            )
-                            .join("")
-
                     }
+                )
+                .join("")
+
+            }
 
                 </div>
 
@@ -443,9 +439,8 @@ function showProduct() {
 
                 <div class="product-main-image-wrap">
 
-                    ${
-                        discountPercent > 0
-                            ? `
+                    ${discountPercent > 0
+            ? `
 
                                 <div class="product-image-badge">
 
@@ -454,27 +449,26 @@ function showProduct() {
                                 </div>
 
                             `
-                            : ""
-                    }
+            : ""
+        }
 
 
-                    ${
-                        mainImage
-                            ? `
+                    ${mainImage
+            ? `
 
                                 <img
                                     src="${escapeHTML(
-                                        mainImage
-                                    )}"
+                mainImage
+            )}"
                                     alt="${escapeHTML(
-                                        product.name
-                                    )}"
+                product.name
+            )}"
                                     id="product-image"
                                     class="product-main-image"
                                 >
 
                             `
-                            : `
+            : `
 
                                 <div class="image-error">
 
@@ -483,7 +477,7 @@ function showProduct() {
                                 </div>
 
                             `
-                    }
+        }
 
 
                     <div
@@ -514,9 +508,9 @@ function showProduct() {
                 <div class="product-category">
 
                     ${escapeHTML(
-                        product.category ||
-                        "Sản phẩm"
-                    )}
+            product.category ||
+            "Sản phẩm"
+        )}
 
                 </div>
 
@@ -524,8 +518,8 @@ function showProduct() {
                 <h1>
 
                     ${escapeHTML(
-                        product.name
-                    )}
+            product.name
+        )}
 
                 </h1>
 
@@ -535,11 +529,10 @@ function showProduct() {
 
                 <div class="product-stock">
 
-                    ${
-                        stock > 0
-                            ? "✓ "
-                            : "✕ "
-                    }
+                    ${stock > 0
+            ? "✓ "
+            : "✕ "
+        }
 
                     ${stockText}
 
@@ -650,9 +643,8 @@ function showProduct() {
              SPECIFICATIONS
              ================================== -->
 
-        ${
-            specificationsHTML
-                ? `
+        ${specificationsHTML
+            ? `
 
                     <section class="product-specifications">
 
@@ -678,7 +670,7 @@ function showProduct() {
                     </section>
 
                 `
-                : ""
+            : ""
         }
 
 
@@ -686,9 +678,8 @@ function showProduct() {
              DESCRIPTION
              ================================== -->
 
-        ${
-            product.description
-                ? `
+        ${product.description
+            ? `
 
                     <section class="product-full-description">
 
@@ -708,15 +699,15 @@ function showProduct() {
                         <div class="description-content">
 
                             ${formatDescription(
-                                product.description
-                            )}
+                product.description
+            )}
 
                         </div>
 
                     </section>
 
                 `
-                : ""
+            : ""
         }
 
     `;
@@ -939,30 +930,29 @@ function renderSpecifications(
 
         <div class="specification-table">
 
-            ${
-                lines
-                    .map(
-                        function (
-                            line
-                        ) {
+            ${lines
+            .map(
+                function (
+                    line
+                ) {
 
-                            const separatorIndex =
-                                line.indexOf(":");
+                    const separatorIndex =
+                        line.indexOf(":");
 
 
-                            if (
-                                separatorIndex === -1
-                            ) {
+                    if (
+                        separatorIndex === -1
+                    ) {
 
-                                return `
+                        return `
 
                                     <div class="spec-row spec-row-full">
 
                                         <div class="spec-value">
 
                                             ${escapeHTML(
-                                                line
-                                            )}
+                            line
+                        )}
 
                                         </div>
 
@@ -970,35 +960,35 @@ function renderSpecifications(
 
                                 `;
 
-                            }
+                    }
 
 
-                            const label =
-                                line
-                                    .substring(
-                                        0,
-                                        separatorIndex
-                                    )
-                                    .trim();
+                    const label =
+                        line
+                            .substring(
+                                0,
+                                separatorIndex
+                            )
+                            .trim();
 
 
-                            const value =
-                                line
-                                    .substring(
-                                        separatorIndex + 1
-                                    )
-                                    .trim();
+                    const value =
+                        line
+                            .substring(
+                                separatorIndex + 1
+                            )
+                            .trim();
 
 
-                            return `
+                    return `
 
                                 <div class="spec-row">
 
                                     <div class="spec-label">
 
                                         ${escapeHTML(
-                                            label
-                                        )}
+                        label
+                    )}
 
                                     </div>
 
@@ -1006,8 +996,8 @@ function renderSpecifications(
                                     <div class="spec-value">
 
                                         ${escapeHTML(
-                                            value
-                                        )}
+                        value
+                    )}
 
                                     </div>
 
@@ -1015,11 +1005,11 @@ function renderSpecifications(
 
                             `;
 
-                        }
-                    )
-                    .join("")
+                }
+            )
+            .join("")
 
-            }
+        }
 
         </div>
 
@@ -1039,10 +1029,10 @@ function formatDescription(
     return escapeHTML(
         description
     )
-    .replace(
-        /\r?\n/g,
-        "<br>"
-    );
+        .replace(
+            /\r?\n/g,
+            "<br>"
+        );
 
 }
 
@@ -1296,10 +1286,10 @@ function setupProductEvents(
                             return String(
                                 item.id
                             )
-                            ===
-                            String(
-                                product.id
-                            );
+                                ===
+                                String(
+                                    product.id
+                                );
 
                         }
                     );
@@ -1308,10 +1298,20 @@ function setupProductEvents(
                 if (existing) {
 
                     existing.quantity =
+                        Math.min(
+                            Number(
+                                existing.quantity || 0
+                            ) +
+                            quantity,
+                            Number(
+                                product.stock || 0
+                            )
+                        );
+
+                    existing.stock =
                         Number(
-                            existing.quantity || 0
-                        ) +
-                        quantity;
+                            product.stock || 0
+                        );
 
                 }
 
@@ -1332,6 +1332,11 @@ function setupProductEvents(
 
                         image:
                             product.image,
+
+                        stock:
+                            Number(
+                                product.stock || 0
+                            ),
 
                         quantity:
                             quantity
@@ -1437,7 +1442,6 @@ function addToCart(
 
     let cart = [];
 
-
     try {
 
         cart =
@@ -1455,41 +1459,36 @@ function addToCart(
 
     }
 
-
-    if (
-        !Array.isArray(cart)
-    ) {
+    if (!Array.isArray(cart)) {
 
         cart = [];
 
     }
 
+    const stock =
+        Number(
+            product.stock || 0
+        );
 
     const existing =
         cart.find(
-            function (
-                item
-            ) {
+            function (item) {
 
-                return String(
-                    item.id
-                )
-                ===
-                String(
-                    product.id
-                );
+                return String(item.id) ===
+                    String(product.id);
 
             }
         );
 
-
     if (existing) {
 
         existing.quantity =
-            Number(
-                existing.quantity || 0
-            ) +
-            quantity;
+            Math.min(
+                Number(existing.quantity || 0) + quantity,
+                stock
+            );
+
+        existing.stock = stock;
 
     }
 
@@ -1497,106 +1496,28 @@ function addToCart(
 
         cart.push({
 
-            id:
-                product.id,
+            id: product.id,
 
-            name:
-                product.name,
+            name: product.name,
 
-            price:
-                Number(
-                    product.price
-                ),
+            price: Number(product.price),
 
-            image:
-                product.image,
+            image: product.image,
 
-            quantity:
-                quantity
+            stock: stock,
+
+            quantity: Math.min(quantity, stock)
 
         });
 
     }
 
-
     localStorage.setItem(
         "cart",
-        JSON.stringify(
-            cart
-        )
+        JSON.stringify(cart)
     );
 
-
     updateCartCount();
-
-}
-
-
-// ========================================
-// CART COUNT
-// ========================================
-
-function updateCartCount() {
-
-    let cart = [];
-
-
-    try {
-
-        cart =
-            JSON.parse(
-                localStorage.getItem(
-                    "cart"
-                )
-            ) || [];
-
-    }
-
-    catch (error) {
-
-        cart = [];
-
-    }
-
-
-    if (
-        !Array.isArray(cart)
-    ) {
-
-        cart = [];
-
-    }
-
-
-    const count =
-        cart.reduce(
-            function (
-                total,
-                item
-            ) {
-
-                return total +
-                    Number(
-                        item.quantity || 0
-                    );
-
-            },
-            0
-        );
-
-
-    const cartCount =
-        document.getElementById(
-            "cart-count"
-        );
-
-
-    if (cartCount) {
-
-        cartCount.textContent =
-            count;
-
-    }
 
 }
 
@@ -1662,11 +1583,11 @@ function formatPrice(
     return Number(
         price || 0
     )
-    .toLocaleString(
-        "vi-VN"
-    )
-    +
-    " ₫";
+        .toLocaleString(
+            "vi-VN"
+        )
+        +
+        " ₫";
 
 }
 
@@ -1690,8 +1611,8 @@ function showProductError(
 
             <p>
                 ${escapeHTML(
-                    message
-                )}
+        message
+    )}
             </p>
 
             <a
@@ -1721,29 +1642,29 @@ function escapeHTML(
         value ?? ""
     )
 
-    .replace(
-        /&/g,
-        "&amp;"
-    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-    .replace(
-        /</g,
-        "&lt;"
-    )
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-    .replace(
-        />/g,
-        "&gt;"
-    )
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-    .replace(
-        /"/g,
-        "&quot;"
-    )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-    .replace(
-        /'/g,
-        "&#039;"
-    );
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }

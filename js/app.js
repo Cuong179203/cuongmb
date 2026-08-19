@@ -102,7 +102,7 @@ async function loadProductsFromAPI() {
 
 
         const apiUrl =
-            API_URL +
+            window.CUONG_MOBILE_API_URL +
             "?action=getProducts&t=" +
             Date.now();
 
@@ -311,9 +311,9 @@ async function loadProductsFromAPI() {
 
                 <p>
                     ${escapeHTML(
-                        error.message ||
-                        "Lỗi không xác định"
-                    )}
+            error.message ||
+            "Lỗi không xác định"
+        )}
                 </p>
 
                 <button
@@ -567,8 +567,8 @@ function normalizeVisible(
         String(
             value ?? ""
         )
-        .trim()
-        .toLowerCase();
+            .trim()
+            .toLowerCase();
 
 
     if (
@@ -835,11 +835,10 @@ function createProductCard(
 
             <div class="product-badge">
 
-                ${
-                    stock <= 0
-                        ? "Hết hàng"
-                        : "Có sẵn"
-                }
+                ${stock <= 0
+            ? "Hết hàng"
+            : "Có sẵn"
+        }
 
             </div>
 
@@ -884,11 +883,10 @@ function createProductCard(
                     type="button"
                     class="add-cart-btn"
                     data-product-id="${escapeHTML(id)}"
-                    ${
-                        stock <= 0
-                            ? "disabled"
-                            : ""
-                    }
+                    ${stock <= 0
+            ? "disabled"
+            : ""
+        }
                 >
                     🛒 Thêm giỏ
                 </button>
@@ -1054,9 +1052,9 @@ function addToCart(
                 return String(
                     item.id
                 ) ===
-                String(
-                    product.id
-                );
+                    String(
+                        product.id
+                    );
 
             }
         );
@@ -1368,39 +1366,39 @@ function createCategoryOptions(
     Array.from(
         categories
     )
-    .sort(
-        function (a, b) {
+        .sort(
+            function (a, b) {
 
-            return a.localeCompare(
-                b,
-                "vi"
-            );
-
-        }
-    )
-    .forEach(
-        function (category) {
-
-            const option =
-                document.createElement(
-                    "option"
+                return a.localeCompare(
+                    b,
+                    "vi"
                 );
 
+            }
+        )
+        .forEach(
+            function (category) {
 
-            option.value =
-                category;
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
 
-            option.textContent =
-                category;
+                option.value =
+                    category;
 
 
-            select.appendChild(
-                option
-            );
+                option.textContent =
+                    category;
 
-        }
-    );
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
 
 
     // Khôi phục lựa chọn
@@ -1482,8 +1480,8 @@ function applyFilters() {
             ? String(
                 search.value || ""
             )
-            .trim()
-            .toLowerCase()
+                .trim()
+                .toLowerCase()
             : "";
 
 
@@ -1509,21 +1507,21 @@ function applyFilters() {
                     String(
                         product.name || ""
                     )
-                    .toLowerCase();
+                        .toLowerCase();
 
 
                 const cat =
                     String(
                         product.category || ""
                     )
-                    .toLowerCase();
+                        .toLowerCase();
 
 
                 const desc =
                     String(
                         product.description || ""
                     )
-                    .toLowerCase();
+                        .toLowerCase();
 
 
                 // ==========================
@@ -1615,12 +1613,12 @@ function applyFilters() {
                 return String(
                     a.name || ""
                 )
-                .localeCompare(
-                    String(
-                        b.name || ""
-                    ),
-                    "vi"
-                );
+                    .localeCompare(
+                        String(
+                            b.name || ""
+                        ),
+                        "vi"
+                    );
 
             }
         );
@@ -1773,7 +1771,7 @@ function updateActiveFilters(
 
         tag.textContent =
             sortNames[
-                sortValue
+            sortValue
             ] ||
             sortValue;
 
@@ -2240,60 +2238,60 @@ function initSmoothScroll() {
     document.querySelectorAll(
         'a[href^="#"]'
     )
-    .forEach(
-        function (link) {
+        .forEach(
+            function (link) {
 
-            link.addEventListener(
-                "click",
-                function (event) {
+                link.addEventListener(
+                    "click",
+                    function (event) {
 
-                    const targetId =
-                        link.getAttribute(
-                            "href"
-                        );
+                        const targetId =
+                            link.getAttribute(
+                                "href"
+                            );
 
 
-                    if (
-                        !targetId ||
-                        targetId === "#"
-                    ) {
+                        if (
+                            !targetId ||
+                            targetId === "#"
+                        ) {
 
-                        return;
+                            return;
+
+                        }
+
+
+                        const target =
+                            document.querySelector(
+                                targetId
+                            );
+
+
+                        if (!target) {
+
+                            return;
+
+                        }
+
+
+                        event.preventDefault();
+
+
+                        target.scrollIntoView({
+
+                            behavior:
+                                "smooth",
+
+                            block:
+                                "start"
+
+                        });
 
                     }
+                );
 
-
-                    const target =
-                        document.querySelector(
-                            targetId
-                        );
-
-
-                    if (!target) {
-
-                        return;
-
-                    }
-
-
-                    event.preventDefault();
-
-
-                    target.scrollIntoView({
-
-                        behavior:
-                            "smooth",
-
-                        block:
-                            "start"
-
-                    });
-
-                }
-            );
-
-        }
-    );
+            }
+        );
 
 }
 
@@ -2437,29 +2435,29 @@ function escapeHTML(
         value ?? ""
     )
 
-    .replace(
-        /&/g,
-        "&amp;"
-    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-    .replace(
-        /</g,
-        "&lt;"
-    )
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-    .replace(
-        />/g,
-        "&gt;"
-    )
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-    .replace(
-        /"/g,
-        "&quot;"
-    )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-    .replace(
-        /'/g,
-        "&#039;"
-    );
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
