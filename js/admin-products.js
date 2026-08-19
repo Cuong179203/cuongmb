@@ -1613,8 +1613,10 @@ function editProduct(
     // ========================================================
 
     setValue(
-        "productImage",
-        product.image
+    "productImages",
+    Array.isArray(product.images)
+        ? product.images.join("\n")
+        : ""
     );
 
     // ========================================================
@@ -1923,8 +1925,8 @@ async function saveProduct(
         productImagesElement
             ? getLines(
                 productImagesElement.value
-            )
-            : [];
+            ).join("\n")
+             : "",
 
     // ========================================================
     // PRODUCT
