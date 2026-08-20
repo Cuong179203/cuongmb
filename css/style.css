@@ -76,7 +76,10 @@ html {
 
 body {
     font-family: var(--font-family);
-    background: var(--gray-100);
+    background:
+        radial-gradient(circle at 8% 0%, rgba(230, 0, 18, .07), transparent 24%),
+        radial-gradient(circle at 92% 16%, rgba(15, 23, 42, .06), transparent 26%),
+        linear-gradient(135deg, #f8fafc 0%, #eef2f7 52%, #f8fafc 100%);
     color: var(--gray-900);
     line-height: 1.6;
 }
@@ -705,7 +708,9 @@ ol {
 .product-detail-page {
     min-height: 600px;
     padding: 45px var(--container-padding) 60px;
-    background: linear-gradient(180deg, var(--gray-100) 0%, #ffffff 100%);
+    background:
+        radial-gradient(circle at 85% 8%, rgba(230, 0, 18, .06), transparent 24%),
+        linear-gradient(180deg, rgba(248, 250, 252, .72) 0%, rgba(255, 255, 255, .94) 100%);
 }
 
 .product-detail {
@@ -862,6 +867,9 @@ ol {
 
 .cart-page {
     padding: var(--space-2xl) var(--container-padding);
+    background:
+        radial-gradient(circle at 12% 12%, rgba(230, 0, 18, .05), transparent 22%),
+        transparent;
 }
 
 .cart-content {
@@ -1000,6 +1008,9 @@ ol {
 
 .checkout-page {
     padding: var(--space-2xl) var(--container-padding);
+    background:
+        radial-gradient(circle at 88% 10%, rgba(15, 23, 42, .06), transparent 24%),
+        transparent;
 }
 .checkout-page > * {
     max-width: var(--container-width);
@@ -1136,6 +1147,9 @@ ol {
     align-items: center;
     justify-content: center;
     padding: var(--space-2xl) var(--container-padding);
+    background:
+        radial-gradient(circle at 50% 8%, rgba(22, 163, 74, .08), transparent 28%),
+        transparent;
 }
 
 .success-box {
