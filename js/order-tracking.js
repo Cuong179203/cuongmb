@@ -155,6 +155,13 @@ function renderOrder(
         ).toLocaleString("vi-VN") +
         " ₫";
 
+    const displayOrderId =
+        String(
+            order["Order ID"] ||
+            order.orderId ||
+            ""
+        ).toUpperCase();
+
     container.className =
         "tracking-result is-success";
 
@@ -165,9 +172,7 @@ function renderOrder(
         "<div class=\"tracking-grid\">" +
         "<span>Mã đơn</span><strong>" +
         escapeHtml(
-            order["Order ID"] ||
-            order.orderId ||
-            ""
+            displayOrderId
         ) +
         "</strong>" +
         "<span>Khách hàng</span><strong>" +
