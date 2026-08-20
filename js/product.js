@@ -288,8 +288,13 @@ function showProduct() {
     // OFFER
     // ====================================
 
+    const offerText =
+        product.offer ||
+        product.discount ||
+        "";
+
     const offerHTML =
-        product.offer
+        offerText
             ? `
 
                 <div class="product-offer">
@@ -303,7 +308,7 @@ function showProduct() {
                     <div class="product-offer-content">
 
                         ${escapeHTML(
-                product.offer
+                offerText
             )}
 
                     </div>
