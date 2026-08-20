@@ -281,40 +281,45 @@ function normalizeProduct(
         // JSON ARRAY
         // ==================================
 
-        try {
+        if (
+            text.startsWith("[") &&
+            text.endsWith("]")
+        ) {
 
-            const parsed =
-                JSON.parse(
-                    text
-                );
+            try {
 
+                const parsed =
+                    JSON.parse(
+                        text
+                    );
 
-            if (
-                Array.isArray(
-                    parsed
-                )
-            ) {
+                if (
+                    Array.isArray(
+                        parsed
+                    )
+                ) {
 
-                parsed.forEach(
-                    function (item) {
+                    parsed.forEach(
+                        function (item) {
 
-                        addImage(
-                            item
-                        );
+                            addImage(
+                                item
+                            );
 
-                    }
-                );
+                        }
+                    );
 
-                return;
+                    return;
+
+                }
 
             }
 
-        }
+            catch (error) {
 
-        catch (error) {
+                // JSON array không hợp lệ, tiếp tục xử lý như text.
+            }
 
-            // Không phải JSON
-            // tiếp tục xử lý text
         }
 
 

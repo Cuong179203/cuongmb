@@ -782,37 +782,43 @@ function normalizeImages(
     // JSON ARRAY
     // ========================================================
 
-    try {
+    if (
+        text.startsWith("[") &&
+        text.endsWith("]")
+    ) {
 
-        const parsed =
-            JSON.parse(
-                text
-            );
+        try {
 
-        if (
-            Array.isArray(parsed)
-        ) {
+            const parsed =
+                JSON.parse(
+                    text
+                );
 
-            return parsed
-                .map(
-                    function (item) {
+            if (
+                Array.isArray(parsed)
+            ) {
 
-                        return String(
-                            item ?? ""
-                        ).trim();
+                return parsed
+                    .map(
+                        function (item) {
 
-                    }
-                )
-                .filter(Boolean);
+                            return String(
+                                item ?? ""
+                            ).trim();
+
+                        }
+                    )
+                    .filter(Boolean);
+
+            }
 
         }
 
-    }
+        catch (error) {
 
-    catch (error) {
+            // JSON array không hợp lệ, tiếp tục xử lý như text.
 
-        // Không phải JSON.
-        // Tiếp tục xử lý text.
+        }
 
     }
 
