@@ -22,7 +22,7 @@ document.addEventListener(
             showProduct();
 
 
-            updateCartCount();
+            refreshProductCartCount();
 
         }
 
@@ -1517,7 +1517,36 @@ function addToCart(
         JSON.stringify(cart)
     );
 
-    updateCartCount();
+    refreshProductCartCount();
+
+}
+
+
+// ========================================
+// CART BADGE BRIDGE
+// ========================================
+
+function refreshProductCartCount() {
+
+    if (
+        typeof updateCartCount ===
+        "function"
+    ) {
+
+        updateCartCount();
+
+        return;
+
+    }
+
+    if (
+        typeof updateProductPageCartCount ===
+        "function"
+    ) {
+
+        updateProductPageCartCount();
+
+    }
 
 }
 
