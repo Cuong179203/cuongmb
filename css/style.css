@@ -77,9 +77,13 @@ html {
 body {
     font-family: var(--font-family);
     background:
-        radial-gradient(circle at 8% 0%, rgba(230, 0, 18, .07), transparent 24%),
-        radial-gradient(circle at 92% 16%, rgba(15, 23, 42, .06), transparent 26%),
-        linear-gradient(135deg, #f8fafc 0%, #eef2f7 52%, #f8fafc 100%);
+        linear-gradient(rgba(148, 163, 184, .10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148, 163, 184, .10) 1px, transparent 1px),
+        radial-gradient(circle at 8% 0%, rgba(230, 0, 18, .14), transparent 28%),
+        radial-gradient(circle at 92% 16%, rgba(15, 23, 42, .10), transparent 30%),
+        linear-gradient(135deg, #f8fafc 0%, #e8edf4 52%, #f8fafc 100%);
+    background-size: 34px 34px, 34px 34px, auto, auto, auto;
+    background-attachment: fixed;
     color: var(--gray-900);
     line-height: 1.6;
 }
@@ -503,6 +507,7 @@ ol {
 #products {
     position: relative;
     padding: 55px var(--container-padding) 65px;
+    background: rgba(248, 250, 252, .68);
 }
 
 #products h2,
@@ -868,7 +873,8 @@ ol {
 .cart-page {
     padding: var(--space-2xl) var(--container-padding);
     background:
-        radial-gradient(circle at 12% 12%, rgba(230, 0, 18, .05), transparent 22%),
+        radial-gradient(circle at 12% 12%, rgba(230, 0, 18, .13), transparent 28%),
+        linear-gradient(180deg, rgba(248, 250, 252, .82), rgba(226, 232, 240, .58)),
         transparent;
 }
 
@@ -1009,7 +1015,8 @@ ol {
 .checkout-page {
     padding: var(--space-2xl) var(--container-padding);
     background:
-        radial-gradient(circle at 88% 10%, rgba(15, 23, 42, .06), transparent 24%),
+        radial-gradient(circle at 88% 10%, rgba(15, 23, 42, .12), transparent 28%),
+        linear-gradient(180deg, rgba(248, 250, 252, .82), rgba(226, 232, 240, .58)),
         transparent;
 }
 .checkout-page > * {
