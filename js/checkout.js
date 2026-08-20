@@ -11,7 +11,7 @@
 
 document.addEventListener(
     "DOMContentLoaded",
-    function () {
+    function() {
 
         loadCheckout();
 
@@ -169,7 +169,7 @@ function loadCheckout() {
     itemsContainer.innerHTML =
         cart
             .map(
-                function (item) {
+                function(item) {
 
                     const price =
                         Number(
@@ -290,7 +290,7 @@ function setupCheckoutForm() {
 
     form.addEventListener(
         "submit",
-        async function (event) {
+        async function(event) {
 
             event.preventDefault();
 
@@ -424,7 +424,7 @@ function setupCheckoutForm() {
 
             const total =
                 cart.reduce(
-                    function (
+                    function(
                         sum,
                         item
                     ) {
@@ -618,6 +618,20 @@ function setupCheckoutForm() {
             }
 
             catch (error) {
+
+                if (
+                    typeof window.CuongMobileNotify ===
+                    "function"
+                ) {
+
+                    window.CuongMobileNotify(
+                        navigator.onLine
+                            ? "Không thể gửi đơn hàng. Vui lòng thử lại."
+                            : "Mất kết nối mạng. Đơn hàng chưa được gửi.",
+                        "error"
+                    );
+
+                }
 
                 console.error(
                     "Lỗi đặt hàng:",
@@ -862,7 +876,7 @@ function updateCartCount() {
 
     const count =
         cart.reduce(
-            function (
+            function(
                 total,
                 item
             ) {

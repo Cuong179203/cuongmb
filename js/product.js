@@ -28,6 +28,20 @@ document.addEventListener(
 
         catch (error) {
 
+            if (
+                typeof window.CuongMobileNotify ===
+                "function"
+            ) {
+
+                window.CuongMobileNotify(
+                    navigator.onLine
+                        ? "Không thể tải chi tiết sản phẩm."
+                        : "Bạn đang ngoại tuyến. Vui lòng kiểm tra mạng.",
+                    "error"
+                );
+
+            }
+
             console.error(
                 "Không tải được products:",
                 error
@@ -176,7 +190,7 @@ function showProduct() {
     const stockText =
         stock > 0
             ? `Còn ${stock} sản phẩm`
-            : "Hết hàng";
+            : "Vừa hết hàng";
 
 
     // ====================================
@@ -1346,12 +1360,27 @@ function setupProductEvents(
                 }
 
 
-                localStorage.setItem(
-                    "cart",
-                    JSON.stringify(
+                if (
+                    typeof window.CuongMobileSaveCart ===
+                    "function"
+                ) {
+
+                    window.CuongMobileSaveCart(
                         cart
-                    )
-                );
+                    );
+
+                }
+
+                else {
+
+                    localStorage.setItem(
+                        "cart",
+                        JSON.stringify(
+                            cart
+                        )
+                    );
+
+                }
 
 
                 window.location.href =
@@ -1512,10 +1541,25 @@ function addToCart(
 
     }
 
-    localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
-    );
+    if (
+        typeof window.CuongMobileSaveCart ===
+        "function"
+    ) {
+
+        window.CuongMobileSaveCart(
+            cart
+        );
+
+    }
+
+    else {
+
+        localStorage.setItem(
+            "cart",
+            JSON.stringify(cart)
+        );
+
+    }
 
     refreshProductCartCount();
 

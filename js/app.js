@@ -239,6 +239,20 @@ async function loadProductsFromAPI() {
 
     catch (error) {
 
+        if (
+            typeof window.CuongMobileNotify ===
+            "function"
+        ) {
+
+            window.CuongMobileNotify(
+                navigator.onLine
+                    ? "Không thể tải sản phẩm. Vui lòng thử lại."
+                    : "Bạn đang ngoại tuyến. Vui lòng kiểm tra kết nối mạng.",
+                "error"
+            );
+
+        }
+
         console.error(
             "================================"
         );
@@ -814,7 +828,7 @@ function createProductCard(
     const stockText =
         stock > 0
             ? `Còn ${stock} sản phẩm`
-            : "Hết hàng";
+            : "Vừa hết hàng";
 
 
     const stockClass =
@@ -836,7 +850,7 @@ function createProductCard(
             <div class="product-badge">
 
                 ${stock <= 0
-            ? "Hết hàng"
+            ? "Vừa hết hàng"
             : "Có sẵn"
         }
 
@@ -1024,143 +1038,158 @@ function addToCart(
 
         cart =
             JSON.parse(
-                localStorage.getItem(
-                    "cart"
-                )
-            ) || [];
+                if (
+            typeof window.CuongMobileSaveCart ===
+            "function"
+        ) {
 
-    }
+            window.CuongMobileSaveCart(
+                cart
+            );
+
+        }
+
+        else {
+
+            localStorage.setItem(
+                "cart",
+                JSON.stringify(
+                    cart
+                )
+            );
+
+        }
 
     catch (error) {
 
-        cart = [];
+            cart = [];
 
-    }
-
-
-    if (!Array.isArray(cart)) {
-
-        cart = [];
-
-    }
+        }
 
 
-    const existingIndex =
-        cart.findIndex(
-            function (item) {
+        if (!Array.isArray(cart)) {
 
-                return String(
-                    item.id
-                ) ===
-                    String(
-                        product.id
-                    );
+            cart = [];
 
-            }
-        );
+        }
 
 
-    if (
-        existingIndex !== -1
-    ) {
+        const existingIndex =
+            cart.findIndex(
+                function (item) {
 
-        const currentQuantity =
-            Number(
-                cart[existingIndex].quantity
-            ) || 1;
+                    return String(
+                        item.id
+                    ) ===
+                        String(
+                            product.id
+                        );
 
-
-        const stock =
-            Number(
-                product.stock
-            ) || 0;
+                }
+            );
 
 
         if (
-            stock > 0 &&
-            currentQuantity >= stock
+            existingIndex !== -1
         ) {
 
-            showToast(
-                "Đã đạt số lượng tồn kho",
-                "warning"
+            const currentQuantity =
+                Number(
+                    cart[existingIndex].quantity
+                ) || 1;
+
+
+            const stock =
+                Number(
+                    product.stock
+                ) || 0;
+
+
+            if (
+                stock > 0 &&
+                currentQuantity >= stock
+            ) {
+
+                showToast(
+                    "Đã đạt số lượng tồn kho",
+                    "warning"
+                );
+
+                return;
+
+            }
+
+
+            cart[
+                existingIndex
+            ].quantity =
+                currentQuantity + 1;
+
+        }
+
+        else {
+
+            cart.push({
+
+                id:
+                    product.id,
+
+                name:
+                    product.name,
+
+                price:
+                    Number(
+                        product.price
+                    ) || 0,
+
+                image:
+                    product.image || "",
+
+                quantity:
+                    1
+
+            });
+
+        }
+
+
+        try {
+
+            localStorage.setItem(
+                "cart",
+                JSON.stringify(cart)
             );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Không thể lưu giỏ hàng:",
+                error
+            );
+
+
+            showToast(
+                "Không thể lưu giỏ hàng",
+                "error"
+            );
+
 
             return;
 
         }
 
 
-        cart[
-            existingIndex
-        ].quantity =
-            currentQuantity + 1;
-
-    }
-
-    else {
-
-        cart.push({
-
-            id:
-                product.id,
-
-            name:
-                product.name,
-
-            price:
-                Number(
-                    product.price
-                ) || 0,
-
-            image:
-                product.image || "",
-
-            quantity:
-                1
-
-        });
-
-    }
-
-
-    try {
-
-        localStorage.setItem(
-            "cart",
-            JSON.stringify(cart)
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Không thể lưu giỏ hàng:",
-            error
-        );
+        updateCartCount();
 
 
         showToast(
-            "Không thể lưu giỏ hàng",
-            "error"
+            `${product.name} đã được thêm vào giỏ`,
+            "success"
         );
 
-
-        return;
-
     }
-
-
-    updateCartCount();
-
-
-    showToast(
-        `${product.name} đã được thêm vào giỏ`,
-        "success"
-    );
-
-}
 
 
 // ========================================
@@ -1169,192 +1198,192 @@ function addToCart(
 
 function initSearch() {
 
-    const search =
-        document.getElementById(
-            "search-input"
-        );
+        const search =
+            document.getElementById(
+                "search-input"
+            );
 
 
-    if (!search) {
+        if (!search) {
 
-        return;
-
-    }
-
-
-    search.addEventListener(
-        "input",
-        function () {
-
-            applyFilters();
-
-            updateSearchClearButton();
+            return;
 
         }
-    );
-
-}
 
 
-// ========================================
-// CLEAR SEARCH
-// ========================================
+        search.addEventListener(
+            "input",
+            function () {
 
-function initClearSearch() {
+                applyFilters();
 
-    const button =
-        document.getElementById(
-            "clear-search"
-        );
-
-
-    const search =
-        document.getElementById(
-            "search-input"
-        );
-
-
-    if (
-        !button ||
-        !search
-    ) {
-
-        return;
-
-    }
-
-
-    updateSearchClearButton();
-
-
-    button.addEventListener(
-        "click",
-        function () {
-
-            search.value = "";
-
-            applyFilters();
-
-            updateSearchClearButton();
-
-            search.focus();
-
-        }
-    );
-
-}
-
-
-// ========================================
-// UPDATE CLEAR SEARCH
-// ========================================
-
-function updateSearchClearButton() {
-
-    const search =
-        document.getElementById(
-            "search-input"
-        );
-
-
-    const button =
-        document.getElementById(
-            "clear-search"
-        );
-
-
-    if (
-        !search ||
-        !button
-    ) {
-
-        return;
-
-    }
-
-
-    button.hidden =
-        !search.value.trim();
-
-}
-
-
-// ========================================
-// CATEGORY
-// ========================================
-
-function initCategoryFilter() {
-
-    const select =
-        document.getElementById(
-            "category-filter"
-        );
-
-
-    if (!select) {
-
-        return;
-
-    }
-
-
-    select.addEventListener(
-        "change",
-        applyFilters
-    );
-
-}
-
-
-// ========================================
-// CATEGORY OPTIONS
-// ========================================
-
-function createCategoryOptions(
-    list
-) {
-
-    const select =
-        document.getElementById(
-            "category-filter"
-        );
-
-
-    if (!select) {
-
-        return;
-
-    }
-
-
-    const currentValue =
-        select.value;
-
-
-    const categories =
-        new Set();
-
-
-    list.forEach(
-        function (product) {
-
-            if (
-                product.category
-            ) {
-
-                categories.add(
-                    String(
-                        product.category
-                    ).trim()
-                );
+                updateSearchClearButton();
 
             }
+        );
+
+    }
+
+
+    // ========================================
+    // CLEAR SEARCH
+    // ========================================
+
+    function initClearSearch() {
+
+        const button =
+            document.getElementById(
+                "clear-search"
+            );
+
+
+        const search =
+            document.getElementById(
+                "search-input"
+            );
+
+
+        if (
+            !button ||
+            !search
+        ) {
+
+            return;
 
         }
-    );
 
 
-    select.innerHTML = `
+        updateSearchClearButton();
+
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                search.value = "";
+
+                applyFilters();
+
+                updateSearchClearButton();
+
+                search.focus();
+
+            }
+        );
+
+    }
+
+
+    // ========================================
+    // UPDATE CLEAR SEARCH
+    // ========================================
+
+    function updateSearchClearButton() {
+
+        const search =
+            document.getElementById(
+                "search-input"
+            );
+
+
+        const button =
+            document.getElementById(
+                "clear-search"
+            );
+
+
+        if (
+            !search ||
+            !button
+        ) {
+
+            return;
+
+        }
+
+
+        button.hidden =
+            !search.value.trim();
+
+    }
+
+
+    // ========================================
+    // CATEGORY
+    // ========================================
+
+    function initCategoryFilter() {
+
+        const select =
+            document.getElementById(
+                "category-filter"
+            );
+
+
+        if (!select) {
+
+            return;
+
+        }
+
+
+        select.addEventListener(
+            "change",
+            applyFilters
+        );
+
+    }
+
+
+    // ========================================
+    // CATEGORY OPTIONS
+    // ========================================
+
+    function createCategoryOptions(
+        list
+    ) {
+
+        const select =
+            document.getElementById(
+                "category-filter"
+            );
+
+
+        if (!select) {
+
+            return;
+
+        }
+
+
+        const currentValue =
+            select.value;
+
+
+        const categories =
+            new Set();
+
+
+        list.forEach(
+            function (product) {
+
+                if (
+                    product.category
+                ) {
+
+                    categories.add(
+                        String(
+                            product.category
+                        ).trim()
+                    );
+
+                }
+
+            }
+        );
+
+
+        select.innerHTML = `
 
         <option value="">
             Tất cả sản phẩm
@@ -1363,746 +1392,776 @@ function createCategoryOptions(
     `;
 
 
-    Array.from(
-        categories
-    )
-        .sort(
-            function (a, b) {
-
-                return a.localeCompare(
-                    b,
-                    "vi"
-                );
-
-            }
+        Array.from(
+            categories
         )
-        .forEach(
-            function (category) {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-
-                option.value =
-                    category;
-
-
-                option.textContent =
-                    category;
-
-
-                select.appendChild(
-                    option
-                );
-
-            }
-        );
-
-
-    // Khôi phục lựa chọn
-
-    if (
-        currentValue &&
-        categories.has(
-            currentValue
-        )
-    ) {
-
-        select.value =
-            currentValue;
-
-    }
-
-}
-
-
-// ========================================
-// SORT
-// ========================================
-
-function initSort() {
-
-    const sort =
-        document.getElementById(
-            "sort-filter"
-        ) ||
-        document.getElementById(
-            "sort"
-        );
-
-
-    if (!sort) {
-
-        return;
-
-    }
-
-
-    sort.addEventListener(
-        "change",
-        applyFilters
-    );
-
-}
-
-
-// ========================================
-// FILTER
-// ========================================
-
-function applyFilters() {
-
-    const search =
-        document.getElementById(
-            "search-input"
-        );
-
-
-    const category =
-        document.getElementById(
-            "category-filter"
-        );
-
-
-    const sort =
-        document.getElementById(
-            "sort-filter"
-        ) ||
-        document.getElementById(
-            "sort"
-        );
-
-
-    const keyword =
-        search
-            ? String(
-                search.value || ""
-            )
-                .trim()
-                .toLowerCase()
-            : "";
-
-
-    const selectedCategory =
-        category
-            ? String(
-                category.value || ""
-            ).trim()
-            : "";
-
-
-    const sortValue =
-        sort
-            ? sort.value
-            : "";
-
-
-    let result =
-        productList.filter(
-            function (product) {
-
-                const name =
-                    String(
-                        product.name || ""
-                    )
-                        .toLowerCase();
-
-
-                const cat =
-                    String(
-                        product.category || ""
-                    )
-                        .toLowerCase();
-
-
-                const desc =
-                    String(
-                        product.description || ""
-                    )
-                        .toLowerCase();
-
-
-                // ==========================
-                // SEARCH
-                // ==========================
-
-                if (
-                    keyword &&
-                    !name.includes(keyword) &&
-                    !cat.includes(keyword) &&
-                    !desc.includes(keyword)
-                ) {
-
-                    return false;
-
-                }
-
-
-                // ==========================
-                // CATEGORY
-                // ==========================
-
-                if (
-                    selectedCategory &&
-                    String(
-                        product.category || ""
-                    ) !==
-                    selectedCategory
-                ) {
-
-                    return false;
-
-                }
-
-
-                return true;
-
-            }
-        );
-
-
-    // ==================================
-    // SORT
-    // ==================================
-
-    if (
-        sortValue === "price-asc"
-    ) {
-
-        result.sort(
-            function (a, b) {
-
-                return (
-                    Number(a.price || 0) -
-                    Number(b.price || 0)
-                );
-
-            }
-        );
-
-    }
-
-
-    else if (
-        sortValue === "price-desc"
-    ) {
-
-        result.sort(
-            function (a, b) {
-
-                return (
-                    Number(b.price || 0) -
-                    Number(a.price || 0)
-                );
-
-            }
-        );
-
-    }
-
-
-    else if (
-        sortValue === "name-asc"
-    ) {
-
-        result.sort(
-            function (a, b) {
-
-                return String(
-                    a.name || ""
-                )
-                    .localeCompare(
-                        String(
-                            b.name || ""
-                        ),
+            .sort(
+                function (a, b) {
+
+                    return a.localeCompare(
+                        b,
                         "vi"
                     );
 
-            }
-        );
+                }
+            )
+            .forEach(
+                function (category) {
 
-    }
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
 
 
-    // ==================================
-    // RENDER
-    // ==================================
+                    option.value =
+                        category;
 
-    renderProducts(
-        result
-    );
 
+                    option.textContent =
+                        category;
 
-    // ==================================
-    // ACTIVE FILTERS
-    // ==================================
 
-    updateActiveFilters(
-        keyword,
-        selectedCategory,
-        sortValue
-    );
-
-}
-
-
-// ========================================
-// ACTIVE FILTERS
-// ========================================
-
-function updateActiveFilters(
-    keyword,
-    category,
-    sortValue
-) {
-
-    const wrapper =
-        document.getElementById(
-            "active-filters"
-        );
-
-
-    const tags =
-        document.getElementById(
-            "filter-tags"
-        );
-
-
-    if (
-        !wrapper ||
-        !tags
-    ) {
-
-        return;
-
-    }
-
-
-    tags.innerHTML = "";
-
-
-    let hasFilter = false;
-
-
-    // SEARCH
-
-    if (keyword) {
-
-        hasFilter = true;
-
-
-        const tag =
-            document.createElement(
-                "span"
-            );
-
-
-        tag.className =
-            "filter-tag";
-
-
-        tag.innerHTML =
-            `Tìm: ${escapeHTML(keyword)}`;
-
-
-        tags.appendChild(tag);
-
-    }
-
-
-    // CATEGORY
-
-    if (category) {
-
-        hasFilter = true;
-
-
-        const tag =
-            document.createElement(
-                "span"
-            );
-
-
-        tag.className =
-            "filter-tag";
-
-
-        tag.innerHTML =
-            `Danh mục: ${escapeHTML(category)}`;
-
-
-        tags.appendChild(tag);
-
-    }
-
-
-    // SORT
-
-    if (sortValue) {
-
-        hasFilter = true;
-
-
-        const sortNames = {
-
-            "price-asc":
-                "Giá thấp → cao",
-
-            "price-desc":
-                "Giá cao → thấp",
-
-            "name-asc":
-                "Tên A → Z"
-
-        };
-
-
-        const tag =
-            document.createElement(
-                "span"
-            );
-
-
-        tag.className =
-            "filter-tag";
-
-
-        tag.textContent =
-            sortNames[
-            sortValue
-            ] ||
-            sortValue;
-
-
-        tags.appendChild(tag);
-
-    }
-
-
-    wrapper.hidden =
-        !hasFilter;
-
-}
-
-
-// ========================================
-// CLEAR FILTERS
-// ========================================
-
-function initClearFilters() {
-
-    const button =
-        document.getElementById(
-            "clear-filters"
-        );
-
-
-    if (!button) {
-
-        return;
-
-    }
-
-
-    button.addEventListener(
-        "click",
-        clearAllFilters
-    );
-
-}
-
-
-// ========================================
-// CLEAR ALL FILTERS
-// ========================================
-
-function clearAllFilters() {
-
-    const search =
-        document.getElementById(
-            "search-input"
-        );
-
-
-    const category =
-        document.getElementById(
-            "category-filter"
-        );
-
-
-    const sort =
-        document.getElementById(
-            "sort-filter"
-        ) ||
-        document.getElementById(
-            "sort"
-        );
-
-
-    if (search) {
-
-        search.value = "";
-
-    }
-
-
-    if (category) {
-
-        category.value = "";
-
-    }
-
-
-    if (sort) {
-
-        sort.value = "";
-
-    }
-
-
-    updateSearchClearButton();
-
-
-    applyFilters();
-
-}
-
-
-// ========================================
-// RESET PRODUCTS
-// ========================================
-
-function initResetProducts() {
-
-    const button =
-        document.getElementById(
-            "reset-products"
-        );
-
-
-    if (!button) {
-
-        return;
-
-    }
-
-
-    button.addEventListener(
-        "click",
-        function () {
-
-            clearAllFilters();
-
-        }
-    );
-
-}
-
-
-// ========================================
-// PRODUCT TOTAL
-// ========================================
-
-function updateProductTotal(
-    count
-) {
-
-    const element =
-        document.getElementById(
-            "product-total"
-        );
-
-
-    if (!element) {
-
-        return;
-
-    }
-
-
-    const total =
-        Number(count) || 0;
-
-
-    element.textContent =
-        `${total} sản phẩm`;
-
-}
-
-
-// ========================================
-// CART COUNT
-// ========================================
-
-function updateCartCount() {
-
-    let cart = [];
-
-
-    try {
-
-        cart =
-            JSON.parse(
-                localStorage.getItem(
-                    "cart"
-                )
-            ) || [];
-
-    }
-
-    catch (error) {
-
-        cart = [];
-
-    }
-
-
-    if (
-        !Array.isArray(cart)
-    ) {
-
-        cart = [];
-
-    }
-
-
-    const count =
-        cart.reduce(
-            function (
-                total,
-                item
-            ) {
-
-                return (
-                    total +
-                    (
-                        Number(
-                            item.quantity
-                        ) || 0
-                    )
-                );
-
-            },
-            0
-        );
-
-
-    document
-        .querySelectorAll(
-            "#cart-count, .cart-count"
-        )
-        .forEach(
-            function (element) {
-
-                element.textContent =
-                    count;
-
-
-                if (count > 0) {
-
-                    element.classList.add(
-                        "has-items"
+                    select.appendChild(
+                        option
                     );
 
                 }
-
-                else {
-
-                    element.classList.remove(
-                        "has-items"
-                    );
-
-                }
-
-            }
-        );
-
-}
+            );
 
 
-// ========================================
-// STORAGE EVENT
-// ========================================
-
-window.addEventListener(
-    "storage",
-    function (event) {
+        // Khôi phục lựa chọn
 
         if (
-            event.key === "cart"
+            currentValue &&
+            categories.has(
+                currentValue
+            )
         ) {
 
-            updateCartCount();
+            select.value =
+                currentValue;
 
         }
 
     }
-);
 
 
-// ========================================
-// MOBILE MENU
-// ========================================
+    // ========================================
+    // SORT
+    // ========================================
 
-function initMobileMenu() {
+    function initSort() {
 
-    const toggle =
-        document.getElementById(
-            "menu-toggle"
+        const sort =
+            document.getElementById(
+                "sort-filter"
+            ) ||
+            document.getElementById(
+                "sort"
+            );
+
+
+        if (!sort) {
+
+            return;
+
+        }
+
+
+        sort.addEventListener(
+            "change",
+            applyFilters
         );
-
-
-    const nav =
-        document.getElementById(
-            "main-nav"
-        );
-
-
-    if (
-        !toggle ||
-        !nav
-    ) {
-
-        return;
 
     }
 
 
-    toggle.addEventListener(
-        "click",
-        function () {
+    // ========================================
+    // FILTER
+    // ========================================
 
-            const isOpen =
-                nav.classList.toggle(
-                    "open"
+    function applyFilters() {
+
+        const search =
+            document.getElementById(
+                "search-input"
+            );
+
+
+        const category =
+            document.getElementById(
+                "category-filter"
+            );
+
+
+        const sort =
+            document.getElementById(
+                "sort-filter"
+            ) ||
+            document.getElementById(
+                "sort"
+            );
+
+
+        const keyword =
+            search
+                ? String(
+                    search.value || ""
+                )
+                    .trim()
+                    .toLowerCase()
+                : "";
+
+
+        const selectedCategory =
+            category
+                ? String(
+                    category.value || ""
+                ).trim()
+                : "";
+
+
+        const sortValue =
+            sort
+                ? sort.value
+                : "";
+
+
+        let result =
+            productList.filter(
+                function (product) {
+
+                    const name =
+                        String(
+                            product.name || ""
+                        )
+                            .toLowerCase();
+
+
+                    const cat =
+                        String(
+                            product.category || ""
+                        )
+                            .toLowerCase();
+
+
+                    const desc =
+                        String(
+                            product.description || ""
+                        )
+                            .toLowerCase();
+
+
+                    // ==========================
+                    // SEARCH
+                    // ==========================
+
+                    if (
+                        keyword &&
+                        !name.includes(keyword) &&
+                        !cat.includes(keyword) &&
+                        !desc.includes(keyword)
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    // ==========================
+                    // CATEGORY
+                    // ==========================
+
+                    if (
+                        selectedCategory &&
+                        String(
+                            product.category || ""
+                        ) !==
+                        selectedCategory
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    return true;
+
+                }
+            );
+
+
+        // ==================================
+        // SORT
+        // ==================================
+
+        if (
+            sortValue === "price-asc"
+        ) {
+
+            result.sort(
+                function (a, b) {
+
+                    return (
+                        Number(a.price || 0) -
+                        Number(b.price || 0)
+                    );
+
+                }
+            );
+
+        }
+
+
+        else if (
+            sortValue === "price-desc"
+        ) {
+
+            result.sort(
+                function (a, b) {
+
+                    return (
+                        Number(b.price || 0) -
+                        Number(a.price || 0)
+                    );
+
+                }
+            );
+
+        }
+
+
+        else if (
+            sortValue === "name-asc"
+        ) {
+
+            result.sort(
+                function (a, b) {
+
+                    return String(
+                        a.name || ""
+                    )
+                        .localeCompare(
+                            String(
+                                b.name || ""
+                            ),
+                            "vi"
+                        );
+
+                }
+            );
+
+        }
+
+
+        // ==================================
+        // RENDER
+        // ==================================
+
+        renderProducts(
+            result
+        );
+
+
+        // ==================================
+        // ACTIVE FILTERS
+        // ==================================
+
+        updateActiveFilters(
+            keyword,
+            selectedCategory,
+            sortValue
+        );
+
+    }
+
+
+    // ========================================
+    // ACTIVE FILTERS
+    // ========================================
+
+    function updateActiveFilters(
+        keyword,
+        category,
+        sortValue
+    ) {
+
+        const wrapper =
+            document.getElementById(
+                "active-filters"
+            );
+
+
+        const tags =
+            document.getElementById(
+                "filter-tags"
+            );
+
+
+        if (
+            !wrapper ||
+            !tags
+        ) {
+
+            return;
+
+        }
+
+
+        tags.innerHTML = "";
+
+
+        let hasFilter = false;
+
+
+        // SEARCH
+
+        if (keyword) {
+
+            hasFilter = true;
+
+
+            const tag =
+                document.createElement(
+                    "span"
                 );
 
 
-            toggle.classList.toggle(
-                "active",
-                isOpen
+            tag.className =
+                "filter-tag";
+
+
+            tag.innerHTML =
+                `Tìm: ${escapeHTML(keyword)}`;
+
+
+            tags.appendChild(tag);
+
+        }
+
+
+        // CATEGORY
+
+        if (category) {
+
+            hasFilter = true;
+
+
+            const tag =
+                document.createElement(
+                    "span"
+                );
+
+
+            tag.className =
+                "filter-tag";
+
+
+            tag.innerHTML =
+                `Danh mục: ${escapeHTML(category)}`;
+
+
+            tags.appendChild(tag);
+
+        }
+
+
+        // SORT
+
+        if (sortValue) {
+
+            hasFilter = true;
+
+
+            const sortNames = {
+
+                "price-asc":
+                    "Giá thấp → cao",
+
+                "price-desc":
+                    "Giá cao → thấp",
+
+                "name-asc":
+                    "Tên A → Z"
+
+            };
+
+
+            const tag =
+                document.createElement(
+                    "span"
+                );
+
+
+            tag.className =
+                "filter-tag";
+
+
+            tag.textContent =
+                sortNames[
+                sortValue
+                ] ||
+                sortValue;
+
+
+            tags.appendChild(tag);
+
+        }
+
+
+        wrapper.hidden =
+            !hasFilter;
+
+    }
+
+
+    // ========================================
+    // CLEAR FILTERS
+    // ========================================
+
+    function initClearFilters() {
+
+        const button =
+            document.getElementById(
+                "clear-filters"
             );
 
 
-            toggle.setAttribute(
-                "aria-expanded",
-                String(isOpen)
+        if (!button) {
+
+            return;
+
+        }
+
+
+        button.addEventListener(
+            "click",
+            clearAllFilters
+        );
+
+    }
+
+
+    // ========================================
+    // CLEAR ALL FILTERS
+    // ========================================
+
+    function clearAllFilters() {
+
+        const search =
+            document.getElementById(
+                "search-input"
             );
+
+
+        const category =
+            document.getElementById(
+                "category-filter"
+            );
+
+
+        const sort =
+            document.getElementById(
+                "sort-filter"
+            ) ||
+            document.getElementById(
+                "sort"
+            );
+
+
+        if (search) {
+
+            search.value = "";
+
+        }
+
+
+        if (category) {
+
+            category.value = "";
+
+        }
+
+
+        if (sort) {
+
+            sort.value = "";
+
+        }
+
+
+        updateSearchClearButton();
+
+
+        applyFilters();
+
+    }
+
+
+    // ========================================
+    // RESET PRODUCTS
+    // ========================================
+
+    function initResetProducts() {
+
+        const button =
+            document.getElementById(
+                "reset-products"
+            );
+
+
+        if (!button) {
+
+            return;
+
+        }
+
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                clearAllFilters();
+
+            }
+        );
+
+    }
+
+
+    // ========================================
+    // PRODUCT TOTAL
+    // ========================================
+
+    function updateProductTotal(
+        count
+    ) {
+
+        const element =
+            document.getElementById(
+                "product-total"
+            );
+
+
+        if (!element) {
+
+            return;
+
+        }
+
+
+        const total =
+            Number(count) || 0;
+
+
+        element.textContent =
+            `${total} sản phẩm`;
+
+    }
+
+
+    // ========================================
+    // CART COUNT
+    // ========================================
+
+    function updateCartCount() {
+
+        let cart = [];
+
+
+        try {
+
+            cart =
+                JSON.parse(
+                    localStorage.getItem(
+                        "cart"
+                    )
+                ) || [];
+
+        }
+
+        catch (error) {
+
+            cart = [];
+
+        }
+
+
+        if (
+            !Array.isArray(cart)
+        ) {
+
+            cart = [];
+
+        }
+
+
+        const count =
+            cart.reduce(
+                function (
+                    total,
+                    item
+                ) {
+
+                    return (
+                        total +
+                        (
+                            Number(
+                                item.quantity
+                            ) || 0
+                        )
+                    );
+
+                },
+                0
+            );
+
+
+        document
+            .querySelectorAll(
+                "#cart-count, .cart-count"
+            )
+            .forEach(
+                function (element) {
+
+                    element.textContent =
+                        count;
+
+
+                    if (count > 0) {
+
+                        element.classList.add(
+                            "has-items"
+                        );
+
+                    }
+
+                    else {
+
+                        element.classList.remove(
+                            "has-items"
+                        );
+
+                    }
+
+                }
+            );
+
+    }
+
+
+    // ========================================
+    // STORAGE EVENT
+    // ========================================
+
+    window.addEventListener(
+        "storage",
+        function (event) {
+
+            if (
+                event.key === "cart"
+            ) {
+
+                updateCartCount();
+
+            }
 
         }
     );
 
 
-    nav.querySelectorAll(
-        "a"
-    ).forEach(
-        function (link) {
+    // ========================================
+    // MOBILE MENU
+    // ========================================
 
-            link.addEventListener(
-                "click",
-                function () {
+    function initMobileMenu() {
+
+        const toggle =
+            document.getElementById(
+                "menu-toggle"
+            );
+
+
+        const nav =
+            document.getElementById(
+                "main-nav"
+            );
+
+
+        if (
+            !toggle ||
+            !nav
+        ) {
+
+            return;
+
+        }
+
+
+        toggle.addEventListener(
+            "click",
+            function () {
+
+                const isOpen =
+                    nav.classList.toggle(
+                        "open"
+                    );
+
+
+                toggle.classList.toggle(
+                    "active",
+                    isOpen
+                );
+
+
+                toggle.setAttribute(
+                    "aria-expanded",
+                    String(isOpen)
+                );
+
+            }
+        );
+
+
+        nav.querySelectorAll(
+            "a"
+        ).forEach(
+            function (link) {
+
+                link.addEventListener(
+                    "click",
+                    function () {
+
+                        nav.classList.remove(
+                            "open"
+                        );
+
+
+                        toggle.classList.remove(
+                            "active"
+                        );
+
+
+                        toggle.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Escape"
+                ) {
 
                     nav.classList.remove(
                         "open"
@@ -2120,344 +2179,314 @@ function initMobileMenu() {
                     );
 
                 }
+
+            }
+        );
+
+    }
+
+
+    // ========================================
+    // BACK TO TOP
+    // ========================================
+
+    function initBackToTop() {
+
+        const button =
+            document.getElementById(
+                "back-to-top"
             );
 
+
+        if (!button) {
+
+            return;
+
         }
-    );
 
 
-    document.addEventListener(
-        "keydown",
-        function (event) {
+        function updateButton() {
 
             if (
-                event.key === "Escape"
+                window.scrollY > 400
             ) {
 
-                nav.classList.remove(
-                    "open"
-                );
-
-
-                toggle.classList.remove(
-                    "active"
-                );
-
-
-                toggle.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-// ========================================
-// BACK TO TOP
-// ========================================
-
-function initBackToTop() {
-
-    const button =
-        document.getElementById(
-            "back-to-top"
-        );
-
-
-    if (!button) {
-
-        return;
-
-    }
-
-
-    function updateButton() {
-
-        if (
-            window.scrollY > 400
-        ) {
-
-            button.classList.add(
-                "show"
-            );
-
-        }
-
-        else {
-
-            button.classList.remove(
-                "show"
-            );
-
-        }
-
-    }
-
-
-    window.addEventListener(
-        "scroll",
-        updateButton,
-        {
-            passive: true
-        }
-    );
-
-
-    button.addEventListener(
-        "click",
-        function () {
-
-            window.scrollTo({
-
-                top: 0,
-
-                behavior: "smooth"
-
-            });
-
-        }
-    );
-
-
-    updateButton();
-
-}
-
-
-// ========================================
-// SMOOTH SCROLL
-// ========================================
-
-function initSmoothScroll() {
-
-    document.querySelectorAll(
-        'a[href^="#"]'
-    )
-        .forEach(
-            function (link) {
-
-                link.addEventListener(
-                    "click",
-                    function (event) {
-
-                        const targetId =
-                            link.getAttribute(
-                                "href"
-                            );
-
-
-                        if (
-                            !targetId ||
-                            targetId === "#"
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        const target =
-                            document.querySelector(
-                                targetId
-                            );
-
-
-                        if (!target) {
-
-                            return;
-
-                        }
-
-
-                        event.preventDefault();
-
-
-                        target.scrollIntoView({
-
-                            behavior:
-                                "smooth",
-
-                            block:
-                                "start"
-
-                        });
-
-                    }
-                );
-
-            }
-        );
-
-}
-
-
-// ========================================
-// TOAST
-// ========================================
-
-function showToast(
-    message,
-    type = "success"
-) {
-
-    const toast =
-        document.getElementById(
-            "toast"
-        );
-
-
-    const toastMessage =
-        document.getElementById(
-            "toast-message"
-        );
-
-
-    const toastIcon =
-        document.getElementById(
-            "toast-icon"
-        );
-
-
-    if (
-        !toast ||
-        !toastMessage
-    ) {
-
-        return;
-
-    }
-
-
-    const icons = {
-
-        success: "✓",
-
-        error: "✕",
-
-        warning: "⚠",
-
-        info: "ℹ"
-
-    };
-
-
-    toastMessage.textContent =
-        message;
-
-
-    if (toastIcon) {
-
-        toastIcon.textContent =
-            icons[type] ||
-            icons.success;
-
-    }
-
-
-    toast.classList.remove(
-        "success",
-        "error",
-        "warning",
-        "info",
-        "show"
-    );
-
-
-    toast.classList.add(
-        type
-    );
-
-
-    void toast.offsetWidth;
-
-
-    toast.classList.add(
-        "show"
-    );
-
-
-    clearTimeout(
-        window.__toastTimer
-    );
-
-
-    window.__toastTimer =
-        setTimeout(
-            function () {
-
-                toast.classList.remove(
+                button.classList.add(
                     "show"
                 );
 
-            },
-            3000
+            }
+
+            else {
+
+                button.classList.remove(
+                    "show"
+                );
+
+            }
+
+        }
+
+
+        window.addEventListener(
+            "scroll",
+            updateButton,
+            {
+                passive: true
+            }
         );
 
-}
 
+        button.addEventListener(
+            "click",
+            function () {
 
-// ========================================
-// PRICE
-// ========================================
+                window.scrollTo({
 
-function formatPrice(
-    value
-) {
+                    top: 0,
 
-    const number =
-        Number(value) || 0;
+                    behavior: "smooth"
 
+                });
 
-    return (
-        number.toLocaleString(
-            "vi-VN"
-        ) +
-        " ₫"
-    );
-
-}
-
-
-// ========================================
-// ESCAPE HTML
-// ========================================
-
-function escapeHTML(
-    value
-) {
-
-    return String(
-        value ?? ""
-    )
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
+            }
         );
 
-}
+
+        updateButton();
+
+    }
+
+
+    // ========================================
+    // SMOOTH SCROLL
+    // ========================================
+
+    function initSmoothScroll() {
+
+        document.querySelectorAll(
+            'a[href^="#"]'
+        )
+            .forEach(
+                function (link) {
+
+                    link.addEventListener(
+                        "click",
+                        function (event) {
+
+                            const targetId =
+                                link.getAttribute(
+                                    "href"
+                                );
+
+
+                            if (
+                                !targetId ||
+                                targetId === "#"
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            const target =
+                                document.querySelector(
+                                    targetId
+                                );
+
+
+                            if (!target) {
+
+                                return;
+
+                            }
+
+
+                            event.preventDefault();
+
+
+                            target.scrollIntoView({
+
+                                behavior:
+                                    "smooth",
+
+                                block:
+                                    "start"
+
+                            });
+
+                        }
+                    );
+
+                }
+            );
+
+    }
+
+
+    // ========================================
+    // TOAST
+    // ========================================
+
+    function showToast(
+        message,
+        type = "success"
+    ) {
+
+        const toast =
+            document.getElementById(
+                "toast"
+            );
+
+
+        const toastMessage =
+            document.getElementById(
+                "toast-message"
+            );
+
+
+        const toastIcon =
+            document.getElementById(
+                "toast-icon"
+            );
+
+
+        if (
+            !toast ||
+            !toastMessage
+        ) {
+
+            return;
+
+        }
+
+
+        const icons = {
+
+            success: "✓",
+
+            error: "✕",
+
+            warning: "⚠",
+
+            info: "ℹ"
+
+        };
+
+
+        toastMessage.textContent =
+            message;
+
+
+        if (toastIcon) {
+
+            toastIcon.textContent =
+                icons[type] ||
+                icons.success;
+
+        }
+
+
+        toast.classList.remove(
+            "success",
+            "error",
+            "warning",
+            "info",
+            "show"
+        );
+
+
+        toast.classList.add(
+            type
+        );
+
+
+        void toast.offsetWidth;
+
+
+        toast.classList.add(
+            "show"
+        );
+
+
+        clearTimeout(
+            window.__toastTimer
+        );
+
+
+        window.__toastTimer =
+            setTimeout(
+                function () {
+
+                    toast.classList.remove(
+                        "show"
+                    );
+
+                },
+                3000
+            );
+
+    }
+
+
+    // ========================================
+    // PRICE
+    // ========================================
+
+    function formatPrice(
+        value
+    ) {
+
+        const number =
+            Number(value) || 0;
+
+
+        return (
+            number.toLocaleString(
+                "vi-VN"
+            ) +
+            " ₫"
+        );
+
+    }
+
+
+    // ========================================
+    // ESCAPE HTML
+    // ========================================
+
+    function escapeHTML(
+        value
+    ) {
+
+        return String(
+            value ?? ""
+        )
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }

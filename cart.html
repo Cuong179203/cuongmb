@@ -5,17 +5,13 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
         Giỏ hàng - Cường Mobile
     </title>
 
-    <link
-        rel="stylesheet"
-        href="css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 
 </head>
 
@@ -23,233 +19,212 @@
 <body>
 
 
-<!-- =====================================
+    <!-- =====================================
      HEADER
 ===================================== -->
 
-<header class="header">
+    <header class="header">
 
-    <div class="header-container">
+        <div class="header-container">
 
-        <a
-            href="index.html"
-            class="logo">
+            <a href="index.html" class="logo">
 
-            <img src="images/logo.png" alt="">
-
-        </a>
-
-
-        <nav class="main-nav">
-
-            <a href="index.html">
-                Trang chủ
-            </a>
-
-            <a href="index.html#products">
-                Sản phẩm
-            </a>
-
-            <a
-                href="cart.html"
-                class="cart-link">
-
-                🛒 Giỏ hàng
-
-                <span id="cart-count">
-                    0
-                </span>
+                <img src="images/logo.png" alt="">
 
             </a>
 
-        </nav>
 
-    </div>
+            <nav class="main-nav">
 
-</header>
+                <a href="index.html">
+                    Trang chủ
+                </a>
+
+                <a href="index.html#products">
+                    Sản phẩm
+                </a>
+
+                <a href="cart.html" class="cart-link">
+
+                    🛒 Giỏ hàng
+
+                    <span id="cart-count">
+                        0
+                    </span>
+
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
 
 
 
-<!-- =====================================
+    <!-- =====================================
      CART
 ===================================== -->
 
-<main class="cart-page">
+    <main class="cart-page">
 
-    <div class="cart-container">
-
-
-        <div class="cart-header">
-
-            <h1>
-                🛒 Giỏ hàng
-            </h1>
-
-            <a
-                href="index.html#products"
-                class="continue-shopping">
-
-                ← Tiếp tục mua hàng
-
-            </a>
-
-        </div>
+        <div class="cart-container">
 
 
+            <div class="cart-header">
 
-        <!-- DANH SÁCH GIỎ -->
+                <h1>
+                    🛒 Giỏ hàng
+                </h1>
 
-        <div
-            id="cart-list"
-            class="cart-list">
+                <a href="index.html#products" class="continue-shopping">
 
-        </div>
+                    ← Tiếp tục mua hàng
 
-
-
-        <!-- GIỎ TRỐNG -->
-
-        <div
-            id="empty-cart"
-            class="empty-cart"
-            style="display:none;">
-
-            <div class="empty-cart-icon">
-                🛒
-            </div>
-
-            <h2>
-                Giỏ hàng đang trống
-            </h2>
-
-            <p>
-                Hãy chọn sản phẩm bạn muốn mua.
-            </p>
-
-            
-
-        </div>
-
-
-
-        <!-- TỔNG -->
-
-        <div
-            id="cart-summary"
-            class="cart-summary"
-            style="display:none;">
-
-
-            <div class="summary-row">
-
-                <span>
-                    Tạm tính
-                </span>
-
-                <strong
-                    id="cart-subtotal">
-
-                    0 ₫
-
-                </strong>
+                </a>
 
             </div>
 
 
-            <div class="summary-row">
 
-                <span>
-                    Phí vận chuyển
-                </span>
+            <!-- DANH SÁCH GIỎ -->
 
-                <strong>
-                    Miễn phí
-                </strong>
+            <div id="cart-list" class="cart-list">
 
             </div>
 
 
-            <div class="summary-total">
 
-                <span>
-                    Tổng cộng
-                </span>
+            <!-- GIỎ TRỐNG -->
 
-                <strong
-                    id="cart-total">
+            <div id="empty-cart" class="empty-cart" style="display:none;">
 
-                    0 ₫
+                <div class="empty-cart-icon">
+                    🛒
+                </div>
 
-                </strong>
+                <h2>
+                    Giỏ hàng đang trống
+                </h2>
+
+                <p>
+                    Hãy chọn sản phẩm bạn muốn mua.
+                </p>
+
+
 
             </div>
 
 
-            <button
-                type="button"
-                id="checkout-btn"
-                class="btn checkout-btn">
 
-                Tiến hành thanh toán →
+            <!-- TỔNG -->
 
-            </button>
+            <div id="cart-summary" class="cart-summary" style="display:none;">
 
 
-            <button
-                type="button"
-                id="clear-cart-btn"
-                class="clear-cart-btn">
+                <div class="summary-row">
 
-                🗑 Xóa toàn bộ giỏ hàng
+                    <span>
+                        Tạm tính
+                    </span>
 
-            </button>
+                    <strong id="cart-subtotal">
+
+                        0 ₫
+
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Phí vận chuyển
+                    </span>
+
+                    <strong>
+                        Miễn phí
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-total">
+
+                    <span>
+                        Tổng cộng
+                    </span>
+
+                    <strong id="cart-total">
+
+                        0 ₫
+
+                    </strong>
+
+                </div>
+
+
+                <button type="button" id="checkout-btn" class="btn checkout-btn">
+
+                    Tiến hành thanh toán →
+
+                </button>
+
+
+                <button type="button" id="clear-cart-btn" class="clear-cart-btn">
+
+                    🗑 Xóa toàn bộ giỏ hàng
+
+                </button>
+
+            </div>
+
 
         </div>
 
-
-    </div>
-
-</main>
+    </main>
 
 
 
-<!-- =====================================
+    <!-- =====================================
      FOOTER
 ===================================== -->
 
-<footer class="footer">
+    <footer class="footer">
 
-    <div class="footer-container">
+        <div class="footer-container">
 
-        <div>
+            <div>
 
-            <h2>
-                CƯỜNG MOBILE
-            </h2>
+                <h2>
+                    CƯỜNG MOBILE
+                </h2>
+
+                <p>
+                    Điện thoại & phụ kiện
+                    chất lượng.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
 
             <p>
-                Điện thoại & phụ kiện
-                chất lượng.
+                © 2026 Cường Mobile.
             </p>
 
         </div>
 
-    </div>
-
-
-    <div class="footer-bottom">
-
-        <p>
-            © 2026 Cường Mobile.
-        </p>
-
-    </div>
-
-</footer>
+    </footer>
 
 
 
-<script src="js/cart.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/cart.js"></script>
 
 
 </body>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu đơn hàng - Cường Mobile</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="Cường Mobile">
+            </a>
+            <nav class="main-nav" aria-label="Điều hướng chính">
+                <a href="index.html">Trang chủ</a>
+                <a href="index.html#products">Sản phẩm</a>
+                <a href="cart.html" class="cart-link">🛒 Giỏ hàng <span id="cart-count">0</span></a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="order-tracking-page">
+        <section class="order-tracking-box" aria-labelledby="tracking-title">
+            <span class="tracking-eyebrow">CƯỜNG MOBILE</span>
+            <h1 id="tracking-title">Tra cứu đơn hàng</h1>
+            <p>Nhập mã đơn hàng để xem trạng thái xử lý mới nhất.</p>
+            <form id="tracking-form">
+                <label for="tracking-order-id">Mã đơn hàng</label>
+                <div class="tracking-form-row">
+                    <input id="tracking-order-id" name="orderId" type="text" placeholder="Ví dụ: CM202608201234567"
+                        autocomplete="off" required>
+                    <button type="submit" class="btn btn-primary">Tra cứu</button>
+                </div>
+            </form>
+            <div id="tracking-result" class="tracking-result" aria-live="polite"></div>
+        </section>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/order-tracking.js"></script>
+</body>
+
+</html>

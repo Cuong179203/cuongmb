@@ -61,12 +61,50 @@ function saveCart(
     cart
 ) {
 
-    localStorage.setItem(
-        "cart",
-        JSON.stringify(
+    if (
+        typeof window.CuongMobileSaveCart ===
+        "function"
+    ) {
+
+        window.CuongMobileSaveCart(
             cart
-        )
-    );
+        );
+
+        return;
+
+    }
+
+    try {
+
+        localStorage.setItem(
+            "cart",
+            JSON.stringify(
+                cart
+            )
+        );
+
+    }
+
+    catch (error) {
+
+        if (
+            typeof window.CuongMobileNotify ===
+            "function"
+        ) {
+
+            window.CuongMobileNotify(
+                "Không thể lưu giỏ hàng trên trình duyệt.",
+                "error"
+            );
+
+        }
+
+        console.error(
+            "Lỗi lưu giỏ hàng:",
+            error
+        );
+
+    }
 
 }
 
