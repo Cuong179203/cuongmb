@@ -222,8 +222,6 @@ function normalizeProduct(
 
     const imageList = [];
 
-            product["Khuyến mãi"] ??
-
     // ====================================
     // ADD IMAGE HELPER
     // ====================================
