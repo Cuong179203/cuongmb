@@ -2495,6 +2495,172 @@ select:focus-visible {
     }
 }
 
+/* ============================================================
+   STOREFRONT HEADER SYSTEM
+============================================================ */
+
+.header {
+    position: sticky;
+    overflow: hidden;
+    padding: 8px var(--container-padding);
+    background: rgba(255, 255, 255, .88);
+    border-bottom: 1px solid rgba(203, 213, 225, .82);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, .08);
+}
+
+.header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #e60012 0%, #fb7185 48%, #2563eb 100%);
+}
+
+.header-content,
+.header-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: var(--container-width);
+    min-height: 68px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.header .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    color: var(--gray-900);
+}
+
+.header .logo::after {
+    content: "CƯỜNG MOBILE";
+    display: none;
+    color: var(--gray-900);
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.header .logo img {
+    width: 58px;
+    height: 58px;
+    padding: 4px;
+    border: 1px solid rgba(230, 0, 18, .16);
+    background: #fff;
+    box-shadow: 0 5px 16px rgba(15, 23, 42, .12);
+}
+
+.header .nav,
+.header .main-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.header .nav a,
+.header .main-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 13px;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    color: var(--gray-700);
+    font-size: 13px;
+    font-weight: 800;
+    transition: color .2s ease, background .2s ease, border-color .2s ease, transform .2s ease;
+}
+
+.header .nav a::after,
+.header .main-nav a::after {
+    display: none;
+}
+
+.header .nav a:hover,
+.header .main-nav a:hover,
+.header .nav a.active,
+.header .main-nav a.active {
+    border-color: rgba(230, 0, 18, .12);
+    background: #fff1f2;
+    color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.header .nav a[href*="cart"],
+.header .main-nav a[href*="cart"] {
+    gap: 7px;
+    padding: 0 14px;
+    border-color: rgba(230, 0, 18, .18);
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 7px 16px rgba(230, 0, 18, .18);
+}
+
+.header .nav a[href*="cart"]:hover,
+.header .main-nav a[href*="cart"]:hover {
+    border-color: var(--primary-hover);
+    background: var(--primary-hover);
+    color: #fff;
+}
+
+.header .cart-count,
+.header .main-nav [id="cart-count"] {
+    min-width: 21px;
+    height: 21px;
+    padding: 0 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, .75);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 900;
+}
+
+@media (max-width: 600px) {
+    .header {
+        padding: 7px 12px;
+    }
+
+    .header-content,
+    .header-container {
+        min-height: 58px;
+        gap: 8px;
+    }
+
+    .header .logo img {
+        width: 48px;
+        height: 48px;
+    }
+
+    .header .nav,
+    .header .main-nav {
+        gap: 3px;
+    }
+
+    .header .nav a,
+    .header .main-nav a {
+        min-height: 36px;
+        padding: 0 8px;
+        font-size: 11px;
+    }
+
+    .header .nav a[href*="cart"],
+    .header .main-nav a[href*="cart"] {
+        padding: 0 9px;
+    }
+}
+
 /* ========================================
    PRODUCT GALLERY
 ======================================== */
