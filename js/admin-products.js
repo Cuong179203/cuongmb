@@ -35,6 +35,13 @@ let products = [];
 
 let editingProductId = null;
 
+const PRODUCT_CATEGORIES = [
+    "Điện thoại",
+    "Tablet",
+    "Máy tính",
+    "Phụ kiện"
+];
+
 
 // ============================================================
 // ADMIN TOKEN
@@ -1020,7 +1027,7 @@ function createCategoryFilter() {
     const oldValue =
         select.value;
 
-    const categories = [];
+    const categories = [...PRODUCT_CATEGORIES];
 
     products.forEach(
         function (product) {
