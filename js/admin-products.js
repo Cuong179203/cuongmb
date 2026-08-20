@@ -1303,6 +1303,22 @@ function renderProducts() {
             );
 
             // =================================================
+            // CATEGORY
+            // =================================================
+
+            const categoryCell =
+                document.createElement(
+                    "td"
+                );
+
+            categoryCell.textContent =
+                product.category;
+
+            row.appendChild(
+                categoryCell
+            );
+
+            // =================================================
             // PRICE
             // =================================================
 
@@ -1321,19 +1337,38 @@ function renderProducts() {
             );
 
             // =================================================
-            // CATEGORY
+            // ORIGINAL PRICE
             // =================================================
 
-            const categoryCell =
+            const originalPriceCell =
                 document.createElement(
                     "td"
                 );
 
-            categoryCell.textContent =
-                product.category;
+            originalPriceCell.textContent =
+                formatMoney(
+                    product.originalPrice
+                );
 
             row.appendChild(
-                categoryCell
+                originalPriceCell
+            );
+
+            // =================================================
+            // OFFER
+            // =================================================
+
+            const offerCell =
+                document.createElement(
+                    "td"
+                );
+
+            offerCell.textContent =
+                product.offer ||
+                "-";
+
+            row.appendChild(
+                offerCell
             );
 
             // =================================================
@@ -1352,24 +1387,6 @@ function renderProducts() {
 
             row.appendChild(
                 stockCell
-            );
-
-            // =================================================
-            // STATUS
-            // =================================================
-
-            const visibleCell =
-                document.createElement(
-                    "td"
-                );
-
-            visibleCell.textContent =
-                product.visible
-                    ? "Đang hiển thị"
-                    : "Ẩn";
-
-            row.appendChild(
-                visibleCell
             );
 
             // =================================================
