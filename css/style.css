@@ -79,9 +79,9 @@ body {
     background:
         linear-gradient(rgba(148, 163, 184, .10) 1px, transparent 1px),
         linear-gradient(90deg, rgba(148, 163, 184, .10) 1px, transparent 1px),
-        radial-gradient(circle at 8% 0%, rgba(230, 0, 18, .14), transparent 28%),
-        radial-gradient(circle at 92% 16%, rgba(15, 23, 42, .10), transparent 30%),
-        linear-gradient(135deg, #f8fafc 0%, #e8edf4 52%, #f8fafc 100%);
+        radial-gradient(circle at 8% 0%, rgba(230, 0, 18, .22), transparent 30%),
+        radial-gradient(circle at 92% 16%, rgba(15, 23, 42, .16), transparent 32%),
+        linear-gradient(135deg, #f8fafc 0%, #dfe7f1 52%, #f8fafc 100%);
     background-size: 34px 34px, 34px 34px, auto, auto, auto;
     background-attachment: fixed;
     color: var(--gray-900);
@@ -507,7 +507,10 @@ ol {
 #products {
     position: relative;
     padding: 55px var(--container-padding) 65px;
-    background: rgba(248, 250, 252, .68);
+    background:
+        radial-gradient(circle at 8% 35%, rgba(230, 0, 18, .10), transparent 24%),
+        radial-gradient(circle at 92% 75%, rgba(37, 99, 235, .08), transparent 26%),
+        rgba(248, 250, 252, .36);
 }
 
 #products h2,
@@ -715,7 +718,7 @@ ol {
     padding: 45px var(--container-padding) 60px;
     background:
         radial-gradient(circle at 85% 8%, rgba(230, 0, 18, .06), transparent 24%),
-        linear-gradient(180deg, rgba(248, 250, 252, .72) 0%, rgba(255, 255, 255, .94) 100%);
+        linear-gradient(180deg, rgba(248, 250, 252, .64) 0%, rgba(255, 255, 255, .82) 100%);
 }
 
 .product-detail {
