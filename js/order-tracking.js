@@ -147,6 +147,11 @@ function renderOrder(
         order.date ||
         "";
 
+    const products =
+        order["Sản phẩm"] ||
+        order.products ||
+        "";
+
     const total =
         Number(
             order["Tổng tiền"] ||
@@ -180,6 +185,9 @@ function renderOrder(
         "</strong>" +
         "<span>Ngày đặt</span><strong>" +
         escapeHtml(date) +
+        "</strong>" +
+        "<span>Sản phẩm</span><strong>" +
+        escapeHtml(products) +
         "</strong>" +
         "<span>Tổng tiền</span><strong>" +
         escapeHtml(total) +
